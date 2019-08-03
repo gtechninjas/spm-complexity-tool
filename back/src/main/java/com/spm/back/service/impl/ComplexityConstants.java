@@ -40,6 +40,8 @@ public class ComplexityConstants {
 	public static String CONTROL_TYPE_BITWISE[] = {"||", "&&", "|", "&"};
 	public static String CONTROL_TYPE_DOUBLE_VALUED[] = {"for", "while", "do"};
 	
+	public static String CONTROL_TYPE_FACTOR_CODE_COMPLEXITY = "control type";
+	
 	
 	/**
 	 * 

@@ -45,7 +45,7 @@ public class FileReaderService implements IFileReaderService {
 
 	}
 	
-	public HashMap<String, Integer> readAllLines(File f) throws IOException {
+	public HashMap<String, String> readAllLines(File f) throws IOException {
 
 		/**
 		 * Defining Variables
@@ -56,10 +56,13 @@ public class FileReaderService implements IFileReaderService {
 
 		int sizeComplexityCost_perLine = 0;
 		int controlTypeComplexityCost_perLine = 0;
+		List<String> controlTypeComplexity_SwitchList = new ArrayList<String>();
+		String totalControlTypeBasedCost;
+		
 		String controlTypeOp  = null;
 		String filePath = null;
 		String fileExtension = null;
-		HashMap<String, Integer> codecomplexities = new HashMap<String, Integer>();
+		HashMap<String, String> codecomplexities = new HashMap<String, String>();
 
 		FileReader fileReader = new FileReader(f);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -92,7 +95,12 @@ public class FileReaderService implements IFileReaderService {
 			/**
              * Start of Navod Content
              */
-            controlTypeComplexityCost_perLine += calcControlStructureFactorComplexityService.calculateControlTypeComplexityCostPerLine_BasedOnType(line, wordArrayList);
+			controlTypeComplexityCost_perLine += calcControlStructureFactorComplexityService
+					.calculateControlTypeComplexityCostPerLine_BasedOnType(line, wordArrayList);
+			if (calcControlStructureFactorComplexityService
+					.calculateControlTypeComplexityCostPerLine_BasedOnType(line) != null)
+				controlTypeComplexity_SwitchList.add(calcControlStructureFactorComplexityService
+						.calculateControlTypeComplexityCostPerLine_BasedOnType(line));
             /**
              * End of Navod Content
              */
@@ -116,11 +124,15 @@ public class FileReaderService implements IFileReaderService {
 		}
 		
 		
-		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, sizeComplexityCost_perLine);
+		totalControlTypeBasedCost = calcControlStructureFactorComplexityService
+				.totalControlTypeComplexityCostPerLine_BasedOnType(controlTypeComplexityCost_perLine,
+						controlTypeComplexity_SwitchList);
+		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, ""+sizeComplexityCost_perLine);
+		codecomplexities.put(ComplexityConstants.CONTROL_TYPE_FACTOR_CODE_COMPLEXITY, totalControlTypeBasedCost);
 		System.out.println("Total count " + sizeComplexityCost_perLine);
 		System.out.println("Number of Lines " + lineCounter);
-		
-		System.out.println("Control Type Cost " + controlTypeComplexityCost_perLine);
+
+		System.out.println("Control Type " + totalControlTypeBasedCost);
 		return codecomplexities;
 	}
 

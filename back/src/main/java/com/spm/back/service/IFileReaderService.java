@@ -6,6 +6,6 @@ import java.util.HashMap;
 
 public interface IFileReaderService {
 
-	public HashMap<String, Integer> readAllLines(File f) throws IOException;
+	public HashMap<String, String> readAllLines(File f) throws IOException;
 	
 }

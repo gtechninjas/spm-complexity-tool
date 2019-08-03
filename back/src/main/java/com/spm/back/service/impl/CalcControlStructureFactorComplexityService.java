@@ -41,5 +41,32 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public String totalControlTypeComplexityCostPerLine_BasedOnType(int costsPerLine, List<String> caseList) {
+		
+		String totalCost = ""+costsPerLine;
+		if(caseList != null) {
+			totalCost = caseList.size()+("n + ") + totalCost;
+			return totalCost;
+		}
+		
+		return totalCost;
+	}
+
+
+	@Override
+	public String calculateControlTypeComplexityCostPerLine_BasedOnType(String line) {
+		
+		if(line != null) {
+			
+			if(line.contains("swicth")) {
+				return "n";
+			}
+			
+		}
+		return null;
+	}
+
 
 }

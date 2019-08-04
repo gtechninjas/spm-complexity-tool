@@ -18,7 +18,7 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 	ComplexityConstants complexityConstants;
 
 	@Override
-	public int calculateControlTypeComplexityCostPerLine_BasedOnType(String line, List<String> wordList) {
+  public int calculateControlTypeComplexityCostPerLine_BasedOnType(String line, List<String> wordList) {
 		
 		int costControlTypeBasedOnType = 0;
 		if(line != null) {
@@ -30,18 +30,32 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 					costControlTypeBasedOnType += complexityConstants.getBitwiseBasedValue(line, word);
 				}
 			}
-			else if(complexityConstants.getDoubleValuedControlType(line) != null) {
+			if(complexityConstants.getDoubleValuedControlType(line) != null) {
 				costControlTypeBasedOnType = 2;
+			}
+			if(line.contains("catch")) {
+				costControlTypeBasedOnType = 1;
 			}
 			
 		}
 		return costControlTypeBasedOnType;
 	}
 
+	@Override
+	public int claculateNestedControlComplexityCostPerLine(List<String> wordList, HashMap<String, Integer> bracesCounter_controlTypeOperatorMap,HashMap<String, Integer> value_controlTypeOperatorMap ){
+		
+		int complexityCost = 0;
+		
+		for(Map.Entry<String, Integer> entry : bracesCounter_controlTypeOperatorMap.entrySet()) {
+		    String controlTypeOperator = entry.getKey();
+		    int bracesCounter = entry.getValue();
 
-	public int claculateNestedControlComplexityCostPerLine(String line) {
-		// TODO Auto-generated method stub
-		return 0;
+		    if(bracesCounter > 0) {
+		    	complexityCost += value_controlTypeOperatorMap.get(controlTypeOperator);
+		    }
+		}
+		
+		return complexityCost;
 	}
 	
 	@Override
@@ -69,32 +83,21 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		}
 		return null;
 	}
-	
-	@Override
-	public int claculateNestedControlComplexityCostPerLine(List<String> wordList, HashMap<String, Integer> bracesCounter_controlTypeOperatorMap,HashMap<String, Integer> value_controlTypeOperatorMap ){
-		
-		int complexityCost = 0;
-		
-		for(Map.Entry<String, Integer> entry : bracesCounter_controlTypeOperatorMap.entrySet()) {
-		    String controlTypeOperator = entry.getKey();
-		    int bracesCounter = entry.getValue();
 
-		    if(bracesCounter > 0) {
-		    	complexityCost += value_controlTypeOperatorMap.get(controlTypeOperator);
-		    }
-		}
-		
-		return complexityCost;
-	}
-	
+
 	@Override
 	public HashMap<String, Integer> mapBracesCounterWithControlStructures(List<String> wordList, HashMap<String, Integer> bracesCounter_controlTypeOperatorMap) {
 		
 		String controlTypeOperator = null;
 		int counter = 0;
+		for(String word : wordList) {
+			if(complexityConstants.getControlTypeOperator(word) != null) {
+				controlTypeOperator = complexityConstants.getControlTypeOperator(word);
+			}
+			
+		}
 		
 		for(String word : wordList) {
-			controlTypeOperator = complexityConstants.getControlTypeOperator(word);
 			if(controlTypeOperator == null) {
 				continue;
 			}
@@ -112,21 +115,19 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 
 
 	@Override
-	public HashMap<String, Integer> mapValuesWithControlStructures(List<String> wordList, HashMap<String, Integer> value_controlTypeOperatorMap) {
+	public HashMap<String, Integer> mapValuesWithControlStructures(List<String> wordList, HashMap<String, Integer> value_controlTypeOperatorMap,HashMap<String, Integer> bracesCounter_controlTypeOperatorMap ) {
 		String controlTypeOperator = null;
-		int counter = 0;
 		
 		for(String word : wordList) {
 			controlTypeOperator = complexityConstants.getControlTypeOperator(word);
 			if(controlTypeOperator == null) {
 				continue;
 			}
-			value_controlTypeOperatorMap.put(controlTypeOperator, ++counter);
+			value_controlTypeOperatorMap.put(controlTypeOperator, bracesCounter_controlTypeOperatorMap.get(controlTypeOperator));
 		}
 		
 		return value_controlTypeOperatorMap;
 	}
-	
 
 
 }

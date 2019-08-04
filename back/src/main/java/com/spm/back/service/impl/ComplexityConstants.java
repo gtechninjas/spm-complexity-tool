@@ -31,16 +31,15 @@ public class ComplexityConstants {
 	public static String NON_VALUE_EXTRACT_CONCAT_OPERATOR[] = { "{", "}", "(", ")", "[", "]", ";", "\"", "\'" };
 
 	public static String SIZE_FACTOR_CODE_COMPLEXITY = "size";
+	public static String CONTROL_TYPE_FACTOR_CODE_COMPLEXITY = "control type";
 
 	public static String JAVA_FILE_TYPE = "java";
 	public static String CPP_FILE_TYPE = "cpp";
 	public static String WHITESPACE_SPLITTER = "\\s+";
 	
-	public static String CONTROL_TYPE_SINGLE_VALUED[] = {"if"};
+	public static String CONTROL_TYPE_SINGLE_VALUED[] = {"if", "else"};
 	public static String CONTROL_TYPE_BITWISE[] = {"||", "&&", "|", "&"};
 	public static String CONTROL_TYPE_DOUBLE_VALUED[] = {"for", "while", "do"};
-	
-	public static String CONTROL_TYPE_FACTOR_CODE_COMPLEXITY = "control type";
 	
 	
 	/**

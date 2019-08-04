@@ -53,14 +53,14 @@ public class FileReaderService implements IFileReaderService {
 		String line = null;
 		int lineCounter = 0;
 		int braketsCounter = 0;
-		int nestedControlTypeComplexityCost_perLine = 0;
 
 		int sizeComplexityCost_perLine = 0;
+
 		int controlTypeComplexityCost_perLine = 0;
+		int nestedControlTypeComplexityCost_perLine = 0;
 		List<String> controlTypeComplexity_SwitchList = new ArrayList<String>();
 		String totalControlTypeBasedCost;
-		
-		String controlTypeOp  = null;
+
 		String filePath = null;
 		String fileExtension = null;
 		HashMap<String, String> codecomplexities = new HashMap<String, String>();
@@ -70,10 +70,8 @@ public class FileReaderService implements IFileReaderService {
 
 		filePath = f.getPath();
 		fileExtension = filePath.substring(filePath.indexOf('.') + 1);
-		
-		HashMap<String, Integer> bracesCounter_controlTypeOperatorMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> value_controlTypeOperatorMap = new HashMap<String, Integer>();
 
+		ICalcSizeFactorComplexityService iCalcSizeFactorComplexityService = new CalcSizeFactorComplexityService();
 
 		String fileType = getFileType(filePath);
 
@@ -81,52 +79,56 @@ public class FileReaderService implements IFileReaderService {
 			System.out.println("Cannot Calculate Complexity of this file");
 			return null;
 		}
-		
+
+		HashMap<String, Integer> bracesCounter_controlTypeOperatorMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> value_controlTypeOperatorMap = new HashMap<String, Integer>();
+
 		while ((line = bufferedReader.readLine()) != null) {
 
 			if (complexityConstants.isNonValueExcludeLine(line)) {
 				continue;
 			}
-			  
+
 			sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.getQuotationCount(line);
-            line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
-            
-            
-			
+			line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
+
 			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
 			List<String> dottedList = new ArrayList<String>();
-			
+
 			/**
-             * Start of Navod Content
-             */
+			 * Start of Navod Content
+			 */
 			controlTypeComplexityCost_perLine += calcControlStructureFactorComplexityService
 					.calculateControlTypeComplexityCostPerLine_BasedOnType(line, wordArrayList);
 			if (calcControlStructureFactorComplexityService
 					.calculateControlTypeComplexityCostPerLine_BasedOnType(line) != null)
 				controlTypeComplexity_SwitchList.add(calcControlStructureFactorComplexityService
 						.calculateControlTypeComplexityCostPerLine_BasedOnType(line));
-            /**
-             * End of Navod Content
-             */
-			
+
+			/**
+			 * End of Navod Content
+			 */
+
 			for (String word : wordArrayList) {
-				if(word.contains(".")) {
+				if (word.contains(".")) {
 					dottedList = Arrays.asList(word.split("\\."));
 					sizeComplexityCost_perLine += dottedList.size() - 1;
 					continue;
-				}			
-				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word, fileType);
-				
+				}
+				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word,
+						fileType);
+
 			}
 			for (String word : dottedList) {
-				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word, fileType);
-				
+				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word,
+						fileType);
+
 			}
-			
+
 			bracesCounter_controlTypeOperatorMap = calcControlStructureFactorComplexityService
 					.mapBracesCounterWithControlStructures(wordArrayList, bracesCounter_controlTypeOperatorMap);
 			value_controlTypeOperatorMap = calcControlStructureFactorComplexityService
-					.mapValuesWithControlStructures(wordArrayList, value_controlTypeOperatorMap);
+					.mapValuesWithControlStructures(wordArrayList, value_controlTypeOperatorMap,bracesCounter_controlTypeOperatorMap);
 			if (sizeComplexityCost_perLine > 0) {
 				nestedControlTypeComplexityCost_perLine += calcControlStructureFactorComplexityService
 						.claculateNestedControlComplexityCostPerLine(wordArrayList,
@@ -136,8 +138,6 @@ public class FileReaderService implements IFileReaderService {
 			lineCounter++;
 
 		}
-		
-		
 		totalControlTypeBasedCost = calcControlStructureFactorComplexityService
 				.totalControlTypeComplexityCostPerLine_BasedOnType(controlTypeComplexityCost_perLine,
 						controlTypeComplexity_SwitchList);
@@ -150,5 +150,6 @@ public class FileReaderService implements IFileReaderService {
 		System.out.println("Nested Control Type " + nestedControlTypeComplexityCost_perLine);
 		return codecomplexities;
 	}
+
 
 }

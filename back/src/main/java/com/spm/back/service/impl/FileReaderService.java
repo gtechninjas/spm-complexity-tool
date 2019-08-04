@@ -53,6 +53,7 @@ public class FileReaderService implements IFileReaderService {
 		String line = null;
 		int lineCounter = 0;
 		int braketsCounter = 0;
+		int nestedControlTypeComplexityCost_perLine = 0;
 
 		int sizeComplexityCost_perLine = 0;
 		int controlTypeComplexityCost_perLine = 0;
@@ -69,6 +70,9 @@ public class FileReaderService implements IFileReaderService {
 
 		filePath = f.getPath();
 		fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+		
+		HashMap<String, Integer> bracesCounter_controlTypeOperatorMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> value_controlTypeOperatorMap = new HashMap<String, Integer>();
 
 
 		String fileType = getFileType(filePath);
@@ -118,6 +122,16 @@ public class FileReaderService implements IFileReaderService {
 				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word, fileType);
 				
 			}
+			
+			bracesCounter_controlTypeOperatorMap = calcControlStructureFactorComplexityService
+					.mapBracesCounterWithControlStructures(wordArrayList, bracesCounter_controlTypeOperatorMap);
+			value_controlTypeOperatorMap = calcControlStructureFactorComplexityService
+					.mapValuesWithControlStructures(wordArrayList, value_controlTypeOperatorMap);
+			if (sizeComplexityCost_perLine > 0) {
+				nestedControlTypeComplexityCost_perLine += calcControlStructureFactorComplexityService
+						.claculateNestedControlComplexityCostPerLine(wordArrayList,
+								bracesCounter_controlTypeOperatorMap, value_controlTypeOperatorMap);
+			}
 
 			lineCounter++;
 
@@ -127,12 +141,13 @@ public class FileReaderService implements IFileReaderService {
 		totalControlTypeBasedCost = calcControlStructureFactorComplexityService
 				.totalControlTypeComplexityCostPerLine_BasedOnType(controlTypeComplexityCost_perLine,
 						controlTypeComplexity_SwitchList);
-		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, ""+sizeComplexityCost_perLine);
+		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, "" + sizeComplexityCost_perLine);
 		codecomplexities.put(ComplexityConstants.CONTROL_TYPE_FACTOR_CODE_COMPLEXITY, totalControlTypeBasedCost);
 		System.out.println("Total count " + sizeComplexityCost_perLine);
 		System.out.println("Number of Lines " + lineCounter);
 
 		System.out.println("Control Type " + totalControlTypeBasedCost);
+		System.out.println("Nested Control Type " + nestedControlTypeComplexityCost_perLine);
 		return codecomplexities;
 	}
 

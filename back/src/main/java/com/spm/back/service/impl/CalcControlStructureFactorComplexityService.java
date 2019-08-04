@@ -1,6 +1,8 @@
 package com.spm.back.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -67,6 +69,64 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		}
 		return null;
 	}
+	
+	@Override
+	public int claculateNestedControlComplexityCostPerLine(List<String> wordList, HashMap<String, Integer> bracesCounter_controlTypeOperatorMap,HashMap<String, Integer> value_controlTypeOperatorMap ){
+		
+		int complexityCost = 0;
+		
+		for(Map.Entry<String, Integer> entry : bracesCounter_controlTypeOperatorMap.entrySet()) {
+		    String controlTypeOperator = entry.getKey();
+		    int bracesCounter = entry.getValue();
+
+		    if(bracesCounter > 0) {
+		    	complexityCost += value_controlTypeOperatorMap.get(controlTypeOperator);
+		    }
+		}
+		
+		return complexityCost;
+	}
+	
+	@Override
+	public HashMap<String, Integer> mapBracesCounterWithControlStructures(List<String> wordList, HashMap<String, Integer> bracesCounter_controlTypeOperatorMap) {
+		
+		String controlTypeOperator = null;
+		int counter = 0;
+		
+		for(String word : wordList) {
+			controlTypeOperator = complexityConstants.getControlTypeOperator(word);
+			if(controlTypeOperator == null) {
+				continue;
+			}
+			if(word.contains("{")) {
+				bracesCounter_controlTypeOperatorMap.put(controlTypeOperator, ++counter);
+			}
+			if(word.contains("}")) {
+				bracesCounter_controlTypeOperatorMap.put(controlTypeOperator, --counter);
+			}
+			System.out.println("MAP_BRACES_COUNTER_WITH_CONTROL_STRUCTURE "+bracesCounter_controlTypeOperatorMap);
+		}
+		
+		return bracesCounter_controlTypeOperatorMap;
+	}
+
+
+	@Override
+	public HashMap<String, Integer> mapValuesWithControlStructures(List<String> wordList, HashMap<String, Integer> value_controlTypeOperatorMap) {
+		String controlTypeOperator = null;
+		int counter = 0;
+		
+		for(String word : wordList) {
+			controlTypeOperator = complexityConstants.getControlTypeOperator(word);
+			if(controlTypeOperator == null) {
+				continue;
+			}
+			value_controlTypeOperatorMap.put(controlTypeOperator, ++counter);
+		}
+		
+		return value_controlTypeOperatorMap;
+	}
+	
 
 
 }

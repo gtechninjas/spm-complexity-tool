@@ -2,6 +2,8 @@ package com.spm.back.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.transaction.Transactional;
 
@@ -60,7 +62,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		if (word.isEmpty()) {
 			return 0;
 		}
-		List<String> extractedWordArrList = extractVariable(word);
+		List<String> extractedWordArrList = extractVariable(word, fileType);
 
 		if (extractedWordArrList == null) {
 			return 0;
@@ -77,34 +79,64 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 
 	}
 
-	public List<String> extractVariable(String word) {
+	public List<String> extractVariable(String word, String fileType) {
 
 		List<String> splittedWordArrList = new ArrayList<String>();
 
-		splittedWordArrList.addAll(extractByKeyword(word));
+		splittedWordArrList.addAll(extractByKeyword(word, fileType));
 
 		return splittedWordArrList;
 	}
 
-	public List<String> extractByKeyword(String word) {
-
-		String extractedOperator = complexityConstants.extractOperator(word);
-
-		List<String> splittedWordArrList = new ArrayList<String>();
-
-		if (extractedOperator == null) {
-			splittedWordArrList.add(word);
-		} else {
-			for (String splittedWord : word.split("\\" + extractedOperator)) {
-				
-				if(complexityConstants.extractOperator(splittedWord) != null)
-				    return extractByKeyword(splittedWord);
-				splittedWordArrList.add(splittedWord);
+	 public String quotationsOmmited(String line) {
+			
+			Pattern p = Pattern.compile("\"([^\"]*)\"");
+			Matcher m = p.matcher(line);
+			while (m.find()) {
+			  line = line.replaceAll(m.group(), " ");
 			}
+			
+			return line;
 		}
+		
+	   public int getQuotationCount(String line) {
+			
+			Pattern p = Pattern.compile("\"([^\"]*)\"");
+			Matcher m = p.matcher(line);
+			int quotationCounter = 0;
+			while (m.find()) {
+				
+				quotationCounter += m.groupCount();
+			}
+			
+			return quotationCounter;
+		}
+		
+		
 
-		return splittedWordArrList;
+		public List<String> extractByKeyword(String word, String fileType) {
 
-	}
+			String extractedOperator = complexityConstants.extractOperator(word, fileType);
+
+			List<String> splittedWordArrList = new ArrayList<String>();
+
+			if (extractedOperator == null) {
+				splittedWordArrList.add(word);
+				
+			} else {
+				if(!complexityConstants.isNonValueExcludeLine(extractedOperator)) {
+					splittedWordArrList.add(extractedOperator);
+				}
+				for (String splittedWord : word.split("\\" + extractedOperator)) {
+					
+					if(complexityConstants.extractOperator(splittedWord, fileType) != null)
+					    return extractByKeyword(splittedWord, fileType);
+					splittedWordArrList.add(splittedWord);
+				}
+			}
+
+			return splittedWordArrList;
+
+		}
 
 }

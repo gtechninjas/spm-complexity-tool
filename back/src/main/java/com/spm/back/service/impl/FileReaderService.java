@@ -74,11 +74,17 @@ public class FileReaderService implements IFileReaderService {
 			if (complexityConstants.isNonValueExcludeLine(line)) {
 				continue;
 			}
+			  
+			sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.getQuotationCount(line);
+            line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
+			
 			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
 			List<String> dottedList = new ArrayList<String>();
+			
 			for (String word : wordArrayList) {
 				if(word.contains(".")) {
 					dottedList = Arrays.asList(word.split("\\."));
+					sizeComplexityCost_perLine += dottedList.size() - 1;
 					continue;
 				}			
 				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word, fileType);
@@ -92,6 +98,7 @@ public class FileReaderService implements IFileReaderService {
 			lineCounter++;
 
 		}
+		
 		
 		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, sizeComplexityCost_perLine);
 		System.out.println("Total count " + sizeComplexityCost_perLine);

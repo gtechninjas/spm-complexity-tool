@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.spm.back.service.ICalcSizeFactorComplexityService;
 import com.spm.back.service.IFileReaderService;
+import com.spm.back.service.TotalComplexityService;
 
 @Service
 @Transactional
@@ -26,6 +27,9 @@ public class FileReaderService implements IFileReaderService {
 	
 	@Autowired
 	private ICalcSizeFactorComplexityService iCalcSizeFactorComplexityService;
+	
+	@Autowired
+	private TotalComplexityService totalComplexityService;
 
 	public String getFileType(String filePath) {
 
@@ -82,7 +86,7 @@ public class FileReaderService implements IFileReaderService {
 			}
 			  
 			sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.getQuotationCount(line);
-            line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
+			line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
 			
 			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
 			List<String> dottedList = new ArrayList<String>();
@@ -100,6 +104,9 @@ public class FileReaderService implements IFileReaderService {
 				sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.complexitySizeFactorValues(word, fileType);
 				
 			}
+			complexityTotalWeight += totalComplexityService.totalComplexityWeight(complexityControlStructure, complexityNestingControlStructure, complexityInheritance);
+			complexityProgramStatement += totalComplexityService.complexityProgramStatement(sizeComplexityCost_perLine, complexityTotalWeight);
+            
 
 			lineCounter++;
 

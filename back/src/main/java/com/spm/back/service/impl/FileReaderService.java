@@ -53,6 +53,12 @@ public class FileReaderService implements IFileReaderService {
 		int sizeComplexityCost_perLine = 0;
 		String filePath = null;
 		String fileExtension = null;
+	
+		int complexityControlStructure = 0;
+		int complexityNestingControlStructure = 0;
+		int complexityInheritance = 0;
+		int complexityTotalWeight = 0;
+		int complexityProgramStatement = 0;
 		HashMap<String, Integer> codecomplexities = new HashMap<String, Integer>();
 
 		FileReader fileReader = new FileReader(f);
@@ -101,7 +107,11 @@ public class FileReaderService implements IFileReaderService {
 		
 		
 		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, sizeComplexityCost_perLine);
+		codecomplexities.put(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY, complexityTotalWeight);
+		codecomplexities.put(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT, complexityProgramStatement);
 		System.out.println("Total count " + sizeComplexityCost_perLine);
+		System.out.println(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY + complexityTotalWeight);
+		System.out.println(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT + complexityProgramStatement);
 		System.out.println("Number of Lines " + lineCounter);
 		return codecomplexities;
 	}

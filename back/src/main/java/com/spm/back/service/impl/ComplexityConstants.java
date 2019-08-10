@@ -31,6 +31,8 @@ public class ComplexityConstants {
 	public static String NON_VALUE_EXTRACT_CONCAT_OPERATOR[] = { "{", "}", "(", ")", "[", "]", ";", "\"", "\'" };
 
 	public static String SIZE_FACTOR_CODE_COMPLEXITY = "size";
+	public static String TOTAL_WEIGHT_COMPLEXITY = "TW";
+	public static String COMPLEXITY_PROGRAM_STATEMENT = "Cps";
 
 	public static String JAVA_FILE_TYPE = "java";
 	public static String CPP_FILE_TYPE = "cpp";

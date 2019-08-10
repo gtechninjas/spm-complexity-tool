@@ -15,6 +15,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
+        path: 'keyword',
+        loadChildren: () => import('./components/keyword/keywordview/keywordview.module').then(m => m.KeywordviewModule)
       }
     ]
   }

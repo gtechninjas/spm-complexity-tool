@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ConfirmComponent } from '../../components/pages/confirm/confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {ConfirmComponent} from '../../components/confirm/confirm.component';
 
 
 @Injectable({

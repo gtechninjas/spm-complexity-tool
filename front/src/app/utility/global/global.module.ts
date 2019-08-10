@@ -5,7 +5,7 @@ import { MatCheckboxModule, MatInputModule } from '@angular/material';
 import { FormsModule , ReactiveFormsModule } from '@angular/forms';
 import { NgbModule  } from '@ng-bootstrap/ng-bootstrap';
 import { MatIconModule } from '@angular/material';
-import { ConfirmComponent } from '../../components/pages/confirm/confirm.component';
+import {ConfirmComponent} from '../../components/confirm/confirm.component';
 
 
 @NgModule({

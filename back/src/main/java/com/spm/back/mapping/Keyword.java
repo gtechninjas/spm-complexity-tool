@@ -32,6 +32,10 @@ public class Keyword implements java.io.Serializable {
 		this.value = value;
 	}
 
+	public Keyword() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "keyword_id", unique = true, nullable = false)

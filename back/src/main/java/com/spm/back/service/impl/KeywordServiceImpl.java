@@ -58,4 +58,19 @@ public class KeywordServiceImpl implements KeywordService {
 		return keywordDTO;
 	}
 
+	@Override
+	public KeywordDTO update(long id, Keyword keyword) {
+		Keyword newKeyword = new Keyword();
+		Optional<Keyword> keyworddetails = keywordRepository.findById(id);
+		if ( keyworddetails.isPresent()) {
+			KeywordDTO key = getDTOByKeyword(keyworddetails.get());
+			newKeyword.setKeyword(key.getKeword());
+			newKeyword.setLanguage(key.getLanguage());
+			newKeyword.setValue(key.getValue());
+			return getDTOByKeyword(keywordRepository.save(newKeyword));
+		} else {
+			return null;
+		}
+	}
+
 }

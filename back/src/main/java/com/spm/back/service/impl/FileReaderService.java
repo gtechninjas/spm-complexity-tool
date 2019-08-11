@@ -67,6 +67,7 @@ public class FileReaderService implements IFileReaderService {
 		int complexityInheritance = 0;
 		String complexityTotalWeight = null;
 		String complexityProgramStatement = null;
+		int recursionCount = 0;
 		HashMap<String, Integer> codecomplexities = new HashMap<String, Integer>();
 		int controlTypeComplexityCost_perLine = 0;
 		List<String> controlTypeComplexity_SwitchList = new ArrayList<String>();
@@ -76,6 +77,7 @@ public class FileReaderService implements IFileReaderService {
 		String filePath1 = null;
 		String fileExtension1 = null;
 		HashMap<String, String> codecomplexities1 = new HashMap<String, String>();
+		RecursionServiceImpl recursionServiceImpl = new RecursionServiceImpl();
 
 		FileReader fileReader = new FileReader(f);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -99,12 +101,11 @@ public class FileReaderService implements IFileReaderService {
 			  
 			sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.getQuotationCount(line);
 			line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
-            line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
-            
-           
 			
 			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
 			List<String> dottedList = new ArrayList<String>();
+			// Obtaining Recursion Count
+			recursionCount = recursionServiceImpl.calculateRecurionMethod(wordArrayList);
 			
 			/**
              * Start of Navod Content
@@ -134,8 +135,6 @@ public class FileReaderService implements IFileReaderService {
 			}
 			complexityTotalWeight += totalComplexityService.totalComplexityWeight(complexityControlStructure, complexityNestingControlStructure, complexityInheritance);
 			complexityProgramStatement += totalComplexityService.complexityProgramStatement(sizeComplexityCost_perLine, complexityTotalWeight);
-            
-
 			lineCounter++;
 
 		}
@@ -144,6 +143,7 @@ public class FileReaderService implements IFileReaderService {
 		codecomplexities1.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, sizeComplexityCost_perLine);
 		codecomplexities1.put(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY, complexityTotalWeight);
 		codecomplexities1.put(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT, complexityProgramStatement);
+		codecomplexities1.put(ComplexityConstants.COMPLEXITY_RECURSION, Integer.toString(recursionCount));
 		System.out.println("Total count " + sizeComplexityCost_perLine);
 		System.out.println(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY + complexityTotalWeight);
 		System.out.println(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT + complexityProgramStatement);
@@ -155,7 +155,7 @@ public class FileReaderService implements IFileReaderService {
 		codecomplexities1.put(ComplexityConstants.CONTROL_TYPE_FACTOR_CODE_COMPLEXITY, totalControlTypeBasedCost);
 		System.out.println("Total count " + sizeComplexityCost_perLine);
 		System.out.println("Number of Lines " + lineCounter);
-
+		System.out.println("Recursion Count " + recursionCount);
 		System.out.println("Control Type " + totalControlTypeBasedCost);
 		return codecomplexities1;
 	}

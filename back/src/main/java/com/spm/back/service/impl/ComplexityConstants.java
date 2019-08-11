@@ -25,6 +25,7 @@ public class ComplexityConstants {
 	public static String SPECIAL_KEYWORDS[] = { "new", "delete", "throws", "throw" };
 	public static String REFERENCE = "&";
 	public static String DEREFERENCE = "*";
+	public static String DATA_TYPES[] = {"boolean","char","byte","byte","int","long","float","double","void"};
 
 	public static String NON_VALUE_EXCLUDE_LINE_KEYWORD[] = { "class", "else", "try", "include", "import", "//" };
 	public static String NON_VALUE_EXCLUDE_KEYWORD[] = { "public", "static", "return" };
@@ -33,6 +34,7 @@ public class ComplexityConstants {
 	public static String SIZE_FACTOR_CODE_COMPLEXITY = "size";
 	public static String TOTAL_WEIGHT_COMPLEXITY = "TW";
 	public static String COMPLEXITY_PROGRAM_STATEMENT = "Cps";
+	public static String COMPLEXITY_RECURSION = "Cr";
 
 	public static String JAVA_FILE_TYPE = "java";
 	public static String CPP_FILE_TYPE = "cpp";
@@ -256,6 +258,7 @@ public class ComplexityConstants {
 		}
 		return false;
 	}
+	
 
 	public String extractOperator(String word, String fileType) {
 

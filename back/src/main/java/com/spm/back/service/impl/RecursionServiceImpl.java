@@ -51,7 +51,7 @@ public class RecursionServiceImpl implements RecursionService {
 			list = br.lines().collect(Collectors.toList());
 			methodList = getAllMethods(file);
 			recursionCall = getDupCount(methodList);
-			if ( recursionCall > 0 ) {
+			if (recursionCall > 0) {
 				return true;
 			} else {
 				return false;
@@ -72,16 +72,103 @@ public class RecursionServiceImpl implements RecursionService {
 	}
 
 	@Override
-	public int calculateRecurionOccurence(String line) {
-		int startIndex = 0;
-		int methodIndex = 0;
-		Pattern p = Pattern.compile("?<={");
-		Matcher m = p.matcher(line);
-		while(m.find()) {
-			startIndex = m.start();
-			methodIndex = startIndex - 1;
+	public int calculateRecurionOccurence(List<String> line) {
+		int index = 0;
+		int indexOfMethod = 0;
+		List<String> methods = new ArrayList<>();
+		for (String word : line) {
+			for (String dataType : ComplexityConstants.DATA_TYPES) {
+				if (word.contains(dataType)) {
+					index = line.indexOf(word);
+					indexOfMethod = index + 1;
+					methods.add(line.get(indexOfMethod));
+				}
+			}
 		}
 		return 0;
+
+	}
+
+	@Override
+	public int calculateRecurionMethod(List<String> words) {
+
+		String s = null;
+
+		int isString = 0;
+		String input1 = "public";
+		String input2 = "void";
+		String input3 = "(";
+		String input4 = "static";
+		String input5 = "int";
+		String input6 = "String";
+		String input7 = "float";
+		int count = 0;
+        int tempCount = 0; // to keep local count of matched numbers
+        List<String> duplicates = new ArrayList<>();
+		int insideMethod = 1;
+
+		String open = "{";
+		String closed = "}";
+		int bracket = 0;
+
+		String methodName = null;
+		List<String> methodList = new ArrayList<>();
+
+		int k = 0;
+
+		for (int i = 0; i < words.size(); i++) {
+			for (int j = 0; j < words.get(i).length(); j++) {
+				char ch = words.get(i).charAt(j); // Read the word char by char
+				if (ch == '"') {
+					isString = isString + 1;
+				}
+			}
+		}
+		for (String word : words) {
+			s = word;
+			if (isString % 2 == 0) {
+				if (s.contains(input1) && s.contains(input3)
+						&& (s.contains(input2) || s.contains(input5) || s.contains(input6) || s.contains(input7))) {
+					int l = 2;
+					String mName[] = null;
+
+					if (s.contains(input4)) {
+						l++;
+					}
+					methodName = words.get(l);
+					// Inserting the method names to the array list
+					methodList.add(methodName);
+					insideMethod++;
+				}
+
+				if (insideMethod > 0) {
+					if (s.contains(open)) {
+						bracket++;
+					}
+					if (s.contains(closed)) {
+						bracket--;
+					}
+				}
+			}
+		}
+		
+		 for (int i = 1; i < methodList.size(); i++) {
+	            if (methodList.get(i) == methodList.get(i - 1)) {
+	                if ((tempCount == 0)) { // If same method is repeated more than
+	                                        // two times, like TEST, TEST
+	                    count = count + 1;
+	                    tempCount = tempCount + 1;
+	                    duplicates.add(methodList.get(i));
+	                }
+	            } else {
+	                tempCount = 0;
+	            }
+	        }
+		
+		return duplicates.size();
 	}
 
 }
+
+
+

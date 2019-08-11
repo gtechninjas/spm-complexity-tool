@@ -11,13 +11,16 @@ import java.util.stream.Collectors;
 
 public class InheritanceController {
 
+    int ancClasses = 0;
+
+
     public List<String> showResourceData(String filePath) throws IOException {
 
 
         File file = new File(filePath);
+        List<String> ancestorClasses = new ArrayList<>();
 
-        List<String> ancestorClasses = new ArrayList<>();;
-
+        int complexity = 0;
         try {
             FileReader fileReader = new FileReader(file);
             BufferedReader reader = new BufferedReader(fileReader);
@@ -41,6 +44,7 @@ public class InheritanceController {
 
                             showResourceData(classPath);
 
+                            ancClasses++;
                         }
                     }
 
@@ -59,11 +63,14 @@ public class InheritanceController {
 
             }
 
+            complexity = ancClasses;
 
+            System.out.println(complexity);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
         return null;

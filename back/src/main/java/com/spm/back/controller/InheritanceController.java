@@ -11,16 +11,17 @@ import java.util.stream.Collectors;
 
 public class InheritanceController {
 
-    int ancClasses = 0;
+    public int ancClasses = 0;
 
 
-    public List<String> showResourceData(String filePath) throws IOException {
+    public void showResourceData(String filePath) throws IOException {
 
 
         File file = new File(filePath);
         List<String> ancestorClasses = new ArrayList<>();
 
         int complexity = 0;
+
         try {
             FileReader fileReader = new FileReader(file);
             BufferedReader reader = new BufferedReader(fileReader);
@@ -32,24 +33,26 @@ public class InheritanceController {
 
             switch (fileExtension){
                 case "java":
-                    ancestorClasses = this.processJavaCode(reader);
+                    ancestorClasses = this.processJavaCode(reader, ancestorClasses);
+                    ancClasses = ancClasses + ancestorClasses.size();
 
                     if(!ancestorClasses.isEmpty()){
 
-                        String classFolderPath = filePath.substring(filePath.lastIndexOf("\\"));
+                        String classFolderPath = filePath.substring(0, filePath.lastIndexOf("\\") + 1);
 
                         for (String ancestorClass : ancestorClasses) {
 
-                            String classPath = classFolderPath + ancestorClass;
+                            String classPath = classFolderPath + ancestorClass + ".java";
 
                             showResourceData(classPath);
 
-                            ancClasses++;
                         }
                     }
 
+                    complexity = ancClasses;
+
                 case "cp":
-                    ancestorClasses = this.processCplusCode(reader);
+                    ancestorClasses = this.processCplusCode(reader, ancestorClasses);
 
                     if(!ancestorClasses.isEmpty()){
 
@@ -63,9 +66,7 @@ public class InheritanceController {
 
             }
 
-            complexity = ancClasses;
 
-            System.out.println(complexity);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,14 +74,13 @@ public class InheritanceController {
 
 
 
-        return null;
+
     }
 
-    private List<String> processJavaCode(BufferedReader reader) throws IOException {
+    private List<String> processJavaCode(BufferedReader reader, List<String> ancestorClasses) throws IOException {
 
         String line;
         List<String> wordArrayList;
-        List<String> ancestorClasses = new ArrayList<>();
         int numberOfLines = 0;
         int ancestorClassCount = 0;
 
@@ -96,11 +96,20 @@ public class InheritanceController {
             for (String word : wordArrayList){
                 if(word.equals("extends")) {
 
-                    int c = wordArrayList.indexOf("extends");
+                    int index = wordArrayList.indexOf("extends");
 
-                    ancestorClasses.add(wordArrayList.get(c + 1));
+                    ancestorClasses.add(wordArrayList.get(index + 1));
 
                     ancestorClassCount++;
+                }
+                else if(word.equals("implements")){
+
+                    int index = wordArrayList.indexOf("implements");
+
+                    ancestorClasses.add(wordArrayList.get(index + 1));
+
+                    ancestorClassCount++;
+
                 }
             }
 
@@ -111,7 +120,7 @@ public class InheritanceController {
         return ancestorClasses;
     }
 
-    private List<String> processCplusCode(BufferedReader reader) throws IOException {
+    private List<String> processCplusCode(BufferedReader reader, List<String> ancestorClasses) throws IOException {
 
         String line;
         List<String> wordArrayList;

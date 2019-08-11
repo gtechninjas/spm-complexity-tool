@@ -19,6 +19,10 @@ export const routes: Routes = [
       {
         path: 'keyword',
         loadChildren: () => import('./components/keyword/keywordview/keywordview.module').then(m => m.KeywordviewModule)
+      },
+      {
+        path: '',
+        loadChildren: () => import('./views/form/form.module').then(m => m.FormModule)
       }
     ]
   }

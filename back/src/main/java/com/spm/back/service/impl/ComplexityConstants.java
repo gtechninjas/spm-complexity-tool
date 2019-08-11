@@ -38,6 +38,103 @@ public class ComplexityConstants {
 	public static String CPP_FILE_TYPE = "cpp";
 	public static String WHITESPACE_SPLITTER = "\\s+";
 
+
+	
+	public static String CONTROL_TYPE_SINGLE_VALUED[] = {"if"};
+	public static String CONTROL_TYPE_BITWISE[] = {"||", "&&", "|", "&"};
+	public static String CONTROL_TYPE_DOUBLE_VALUED[] = {"for", "while", "do"};
+	
+	public static String CONTROL_TYPE_FACTOR_CODE_COMPLEXITY = "control type";
+	
+	
+	/**
+	 * 
+	 * @param word
+	 * @param fileType
+	 * @return
+	 * 
+	 * Start of Navod Content
+	 */
+	
+	public String getSingleValuedControlType(String line) {
+		for(String controlTypeKeyword: CONTROL_TYPE_SINGLE_VALUED) {
+			if(line.contains(controlTypeKeyword)) {
+				return controlTypeKeyword;
+			}
+		}
+		return null;
+	}
+	
+	public String getDoubleValuedControlType(String line) {
+		for(String controlTypeKeyword: CONTROL_TYPE_DOUBLE_VALUED) {
+			if(line.contains(controlTypeKeyword)) {
+				return controlTypeKeyword;
+			}
+		}
+		return null;
+	}
+	
+	public String getControlTypeOperator(String line) {
+		
+		List<String> controlTypeOpList = new ArrayList<String>();
+		controlTypeOpList.addAll(Arrays.asList(CONTROL_TYPE_DOUBLE_VALUED));
+		controlTypeOpList.addAll(Arrays.asList(CONTROL_TYPE_SINGLE_VALUED));
+		
+		if (line == null) {
+			return null;
+		}
+		for (String controlTypeKeyword : controlTypeOpList) {
+			if (line.contains(controlTypeKeyword)) {
+				return controlTypeKeyword;
+			}
+		}
+		return null;
+		
+	}
+	
+	public String getControlTypeBitWiseOperator(String bitwiseWord) {
+		for(String controlTypeBitwiseOp: CONTROL_TYPE_BITWISE) {
+			if(bitwiseWord.equals(controlTypeBitwiseOp)) {
+				return controlTypeBitwiseOp;
+			}
+		}
+		return null;
+	}
+	
+	public int getBitwiseBasedValue(String controlTypeOpLine, String bitwiseWord) {
+		
+		
+		if((getSingleValuedControlType(controlTypeOpLine) != null) && (getControlTypeBitWiseOperator(bitwiseWord) != null)) {
+			return 1;
+		}
+		else if((getDoubleValuedControlType(controlTypeOpLine) != null) && (getControlTypeBitWiseOperator(bitwiseWord) != null)) {
+			return 2;
+		}
+		return 0;
+		
+	}
+	
+	/**
+	 * 
+	 * @param word
+	 * @param fileType
+	 * @return
+	 * 
+	 * End of Navod Content
+	 */
+	
+	
+	/**
+	 * 
+	 * @param word
+	 * @param fileType
+	 * @return
+	 * 
+	 * Start of Dilan Content
+	 */
+	
+	
+
 	public Boolean isNonValueExcludeLine(String line) {
 		for (String keyword : NON_VALUE_EXCLUDE_LINE_KEYWORD) {
 			if (line.contains(keyword)) {
@@ -187,5 +284,15 @@ public class ComplexityConstants {
 		}
 		return null;
 	}
+
+	
+	/**
+	 * 
+	 * @param word
+	 * @param fileType
+	 * @return
+	 * 
+	 * End of Dilan Content
+	 */
 
 }

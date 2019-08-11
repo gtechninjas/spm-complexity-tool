@@ -9,9 +9,10 @@ public class TotalWeightServiceImpl implements TotalComplexityService{
 		return controlstructure + controlnestingstructure + controlinheritance;
 	}
 
+
 	@Override
-	public int complexityProgramStatement(int controlsize, int totalweight) {
-		return controlsize * totalweight;
+	public int complexityProgramStatement(String sizeComplexityCost_perLine, String complexityTotalWeight) {
+		return Integer.parseInt(sizeComplexityCost_perLine) * Integer.parseInt(complexityTotalWeight);
 	}
 
 }

@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import com.spm.back.service.ICalcSizeFactorComplexityService;
 import com.spm.back.service.IFileReaderService;
 import com.spm.back.service.TotalComplexityService;
+import com.spm.back.service.ICalcControlStructureFactorComplexityService;
+import com.spm.back.service.ICalcSizeFactorComplexityService;
+import com.spm.back.service.IFileReaderService;
 
 @Service
 @Transactional
@@ -30,10 +33,11 @@ public class FileReaderService implements IFileReaderService {
 	
 	@Autowired
 	private TotalComplexityService totalComplexityService;
+	private ICalcControlStructureFactorComplexityService calcControlStructureFactorComplexityService;
 
-	public String getFileType(String filePath) {
+	public String getFileType(String filePathloc) {
 
-		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+		String fileExtension = filePathloc.substring(filePathloc.indexOf('.') + 1);
 
 		if (fileExtension.equals(ComplexityConstants.JAVA_FILE_TYPE)) {
 			return ComplexityConstants.JAVA_FILE_TYPE;
@@ -45,7 +49,7 @@ public class FileReaderService implements IFileReaderService {
 
 	}
 	
-	public HashMap<String, Integer> readAllLines(File f) throws IOException {
+	public HashMap<String, String> readAllLines(File f) throws IOException {
 
 		/**
 		 * Defining Variables
@@ -54,25 +58,33 @@ public class FileReaderService implements IFileReaderService {
 		int lineCounter = 0;
 		int braketsCounter = 0;
 
-		int sizeComplexityCost_perLine = 0;
+		String sizeComplexityCost_perLine = null;
 		String filePath = null;
 		String fileExtension = null;
 	
 		int complexityControlStructure = 0;
 		int complexityNestingControlStructure = 0;
 		int complexityInheritance = 0;
-		int complexityTotalWeight = 0;
-		int complexityProgramStatement = 0;
+		String complexityTotalWeight = null;
+		String complexityProgramStatement = null;
 		HashMap<String, Integer> codecomplexities = new HashMap<String, Integer>();
+		int controlTypeComplexityCost_perLine = 0;
+		List<String> controlTypeComplexity_SwitchList = new ArrayList<String>();
+		String totalControlTypeBasedCost;
+		
+		String controlTypeOp  = null;
+		String filePath1 = null;
+		String fileExtension1 = null;
+		HashMap<String, String> codecomplexities1 = new HashMap<String, String>();
 
 		FileReader fileReader = new FileReader(f);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-		filePath = f.getPath();
-		fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+		filePath1 = f.getPath();
+		fileExtension1 = filePath1.substring(filePath1.indexOf('.') + 1);
 
 
-		String fileType = getFileType(filePath);
+		String fileType = getFileType(filePath1);
 
 		if (fileType == null) {
 			System.out.println("Cannot Calculate Complexity of this file");
@@ -87,9 +99,25 @@ public class FileReaderService implements IFileReaderService {
 			  
 			sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.getQuotationCount(line);
 			line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
+            line = iCalcSizeFactorComplexityService.quotationsOmmited(line);
+            
+           
 			
 			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
 			List<String> dottedList = new ArrayList<String>();
+			
+			/**
+             * Start of Navod Content
+             */
+			controlTypeComplexityCost_perLine += calcControlStructureFactorComplexityService
+					.calculateControlTypeComplexityCostPerLine_BasedOnType(line, wordArrayList);
+			if (calcControlStructureFactorComplexityService
+					.calculateControlTypeComplexityCostPerLine_BasedOnType(line) != null)
+				controlTypeComplexity_SwitchList.add(calcControlStructureFactorComplexityService
+						.calculateControlTypeComplexityCostPerLine_BasedOnType(line));
+            /**
+             * End of Navod Content
+             */
 			
 			for (String word : wordArrayList) {
 				if(word.contains(".")) {
@@ -113,14 +141,23 @@ public class FileReaderService implements IFileReaderService {
 		}
 		
 		
-		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, sizeComplexityCost_perLine);
-		codecomplexities.put(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY, complexityTotalWeight);
-		codecomplexities.put(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT, complexityProgramStatement);
+		codecomplexities1.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, sizeComplexityCost_perLine);
+		codecomplexities1.put(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY, complexityTotalWeight);
+		codecomplexities1.put(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT, complexityProgramStatement);
 		System.out.println("Total count " + sizeComplexityCost_perLine);
 		System.out.println(ComplexityConstants.TOTAL_WEIGHT_COMPLEXITY + complexityTotalWeight);
 		System.out.println(ComplexityConstants.COMPLEXITY_PROGRAM_STATEMENT + complexityProgramStatement);
 		System.out.println("Number of Lines " + lineCounter);
-		return codecomplexities;
+		totalControlTypeBasedCost = calcControlStructureFactorComplexityService
+				.totalControlTypeComplexityCostPerLine_BasedOnType(controlTypeComplexityCost_perLine,
+						controlTypeComplexity_SwitchList);
+		codecomplexities1.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, ""+sizeComplexityCost_perLine);
+		codecomplexities1.put(ComplexityConstants.CONTROL_TYPE_FACTOR_CODE_COMPLEXITY, totalControlTypeBasedCost);
+		System.out.println("Total count " + sizeComplexityCost_perLine);
+		System.out.println("Number of Lines " + lineCounter);
+
+		System.out.println("Control Type " + totalControlTypeBasedCost);
+		return codecomplexities1;
 	}
 
 }

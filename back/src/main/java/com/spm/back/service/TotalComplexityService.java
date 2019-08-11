@@ -4,5 +4,5 @@ public interface TotalComplexityService {
 
 	int totalComplexityWeight(int controlstructure , int controlnestingstructure , int controlinheritance);
 	
-	int complexityProgramStatement( int controlsize , int totalweight);
+	int complexityProgramStatement( String sizeComplexityCost_perLine , String complexityTotalWeight);
 }

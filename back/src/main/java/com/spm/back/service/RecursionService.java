@@ -8,4 +8,5 @@ import java.util.List;
 public interface RecursionService {
 	List<String> getAllMethods(File file);
 	Boolean checkRecursionPresent(File file) throws FileNotFoundException, IOException;
+	int calculateRecurionOccurence( String line );
 }

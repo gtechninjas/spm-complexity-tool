@@ -1,0 +1,35 @@
+.hide{
+    display: none;
+  }
+  
+  mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+  }
+  
+  .search-div{
+    margin: 10px;
+  
+    .search-form-field{
+      width: 60%;
+      margin-left: 150px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: black;
+    }
+  }
+  
+  .datatableheader{
+    background-color: #2f353a;
+    border-radius: 5px;
+  }
+  
+  .mat-header-cell{
+    color: white;
+  }
+  
+  .mat-paginator{
+    color: #014a64;
+  }
+  
+  

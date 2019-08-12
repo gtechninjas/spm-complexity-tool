@@ -38,7 +38,6 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
-// import { FormComponent } from './views/form/form.component';
 
 
 @NgModule({
@@ -60,7 +59,7 @@ import { ChartsModule } from 'ng2-charts';
   ],
   declarations: [
     AppComponent,
-    ...APP_CONTAINERS,
+    ...APP_CONTAINERS
   ],
   providers: [
   ],

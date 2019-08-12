@@ -36,8 +36,13 @@ export const navItems: NavData[] = [
     icon: 'icon-speedometer'
   },
   {
-    name: 'Form',
-    url: '/',
-    icon: 'icon-speech'
+    name: 'Keyword',
+    url: '/keyword',
+    icon: 'icon-speedometer'
+  },
+  {
+    name: 'Operator',
+    url: '/operator',
+    icon: 'icon-speedometer'
   }
 ];

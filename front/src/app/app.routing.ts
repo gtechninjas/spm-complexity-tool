@@ -17,8 +17,12 @@ export const routes: Routes = [
         loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
-        path: '',
-        loadChildren: () => import('./views/form/form.module').then(m => m.FormModule)
+        path: 'keyword',
+        loadChildren: () => import('./components/keyword/keywordview/keywordview.module').then(m => m.KeywordviewModule)
+      },
+      {
+        path: 'operator',
+        loadChildren: () => import('./components/operator/operatorview/operatorview.module').then(m => m.OperatorviewModule)
       }
     ]
   }

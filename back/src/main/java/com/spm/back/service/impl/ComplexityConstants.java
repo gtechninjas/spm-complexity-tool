@@ -27,6 +27,9 @@ public class ComplexityConstants {
 	public static String DEREFERENCE = "*";
 
 	public static String NON_VALUE_EXCLUDE_LINE_KEYWORD[] = { "class", "else", "try", "include", "import", "//" };
+	
+	public static String NON_VALUE_EXCLUDE_LINE_KEYWORD_CONTROL_TYPE[] = { "class", "try", "include", "import", "//" };
+	
 	public static String NON_VALUE_EXCLUDE_KEYWORD[] = { "public", "static", "return" };
 	public static String NON_VALUE_EXTRACT_CONCAT_OPERATOR[] = { "{", "}", "(", ")", "[", "]", ";", "\"", "\'" };
 
@@ -37,7 +40,7 @@ public class ComplexityConstants {
 	public static String CPP_FILE_TYPE = "cpp";
 	public static String WHITESPACE_SPLITTER = "\\s+";
 	
-	public static String CONTROL_TYPE_SINGLE_VALUED[] = {"if"};
+	public static String CONTROL_TYPE_SINGLE_VALUED[] = {"if", "else"};
 	public static String CONTROL_TYPE_BITWISE[] = {"||", "&&", "|", "&"};
 	public static String CONTROL_TYPE_DOUBLE_VALUED[] = {"for", "while", "do"};
 	
@@ -71,4 +74,15 @@ public class ComplexityConstants {
 		}
 		return false;
 	}
+	
+	public Boolean isNonValueExcludeLine_ControlType(String line) {
+		
+		for (String keyword : NON_VALUE_EXCLUDE_LINE_KEYWORD_CONTROL_TYPE) {
+			if (line.contains(keyword)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

@@ -2,5 +2,8 @@ package com.spm.back.service;
 
 public interface ICalcControlStructureFactorComplexityService {
 
-	public int claculateSizeComplexityCostPerLine(String line); 
+	String getControlTypeComplexityCostPerLine_BasedOnType(String line);
+	
+	String getControlTypeComplexityKeyword_Nested(String line);
+
 }

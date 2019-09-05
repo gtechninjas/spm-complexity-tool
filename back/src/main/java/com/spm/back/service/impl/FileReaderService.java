@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spm.back.service.ICalcControlStructureFactorComplexityService;
 import com.spm.back.service.ICalcSizeFactorComplexityService;
 import com.spm.back.service.IFileReaderService;
 
@@ -23,10 +24,9 @@ public class FileReaderService implements IFileReaderService {
 
 	@Autowired
 	private ComplexityConstants complexityConstants = new ComplexityConstants();
-	
-	@Autowired
-	private ICalcSizeFactorComplexityService iCalcSizeFactorComplexityService = new CalcSizeFactorComplexityService();
 
+	private ICalcSizeFactorComplexityService iCalcSizeFactorComplexityService = new CalcSizeFactorComplexityService();
+	
 	public String getFileType(String filePath) {
 
 		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
@@ -48,28 +48,27 @@ public class FileReaderService implements IFileReaderService {
 		 */
 		String line = null;
 		int lineCounter = 0;
-		int braketsCounter = 0;
 
 		int sizeComplexityCost_perLine = 0;
 
 		String filePath = null;
-		String fileExtension = null;
 		HashMap<String, String> codecomplexities = new HashMap<String, String>();
 
 		FileReader fileReader = new FileReader(f);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 		filePath = f.getPath();
-		fileExtension = filePath.substring(filePath.indexOf('.') + 1);
-
-		ICalcSizeFactorComplexityService iCalcSizeFactorComplexityService = new CalcSizeFactorComplexityService();
+		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
 
 		String fileType = getFileType(filePath);
-
+		
+		HashMap<String, String> complexitySummary = new HashMap<String, String>();
+		
 		if (fileType == null) {
 			System.out.println("Cannot Calculate Complexity of this file");
 			return null;
 		}
+		int sizeFctorComplexity = 0;
 
 		while ((line = bufferedReader.readLine()) != null) {
 
@@ -77,16 +76,14 @@ public class FileReaderService implements IFileReaderService {
 				continue;
 			}
 			
-			sizeComplexityCost_perLine += iCalcSizeFactorComplexityService.calculateSizefactorPerLine(line, fileType);
+			sizeFctorComplexity = iCalcSizeFactorComplexityService.calculateSizefactorPerLine(line, fileType);
+			sizeComplexityCost_perLine += sizeFctorComplexity;
+			complexitySummary.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, ""+sizeFctorComplexity);
 			
 			lineCounter++;
 
 		}
 		
-		codecomplexities.put(ComplexityConstants.SIZE_FACTOR_CODE_COMPLEXITY, "" + sizeComplexityCost_perLine);
-		
-		System.out.println("Total count " + sizeComplexityCost_perLine);
-		System.out.println("Number of Lines " + lineCounter);
 		return codecomplexities;
 	}
 

@@ -1,5 +1,10 @@
 package com.spm.back.service.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +29,45 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	public CalcSizeFactorComplexityService() {
 
 	}
+	
+	public String getFileType(String filePath) {
+
+		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+
+		if (fileExtension.equals(ComplexityConstants.JAVA_FILE_TYPE)) {
+			return ComplexityConstants.JAVA_FILE_TYPE;
+		} else if (fileExtension.equals(ComplexityConstants.CPP_FILE_TYPE)) {
+			return ComplexityConstants.CPP_FILE_TYPE;
+		} else {
+			return null;
+		}
+
+	}
+	
 	@Override
+	public List<Integer> getCalcSizeComplexity(File f) throws IOException{
+		List<Integer> listedSizeComplexities = new ArrayList<Integer>();
+		FileReader fileReader = new FileReader(f);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String filePath = f.getPath();
+		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+        String fileType = getFileType(filePath);
+		String line = null;
+		int sizeFctorComplexity = 0;
+		while ((line = bufferedReader.readLine()) != null) {
+
+			if (complexityConstants.isNonValueExcludeLine(line)) {
+				continue;
+			}
+			
+			sizeFctorComplexity = calculateSizefactorPerLine(line, fileType);
+			listedSizeComplexities.add(sizeFctorComplexity);
+
+		}
+		return listedSizeComplexities;
+		
+	}
+	
 	public int calculateSizefactorPerLine(String line, String type) {
 		
 		int totalSizeComplexityPerLine = 0;

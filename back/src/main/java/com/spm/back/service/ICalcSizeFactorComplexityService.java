@@ -1,11 +1,10 @@
 package com.spm.back.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 public interface ICalcSizeFactorComplexityService {
 
-	
-	String quotationsOmmited(String line);
-	
-	int getQuotationCount(String line);
-
-	int calculateSizefactorPerLine(String line, String type);
+	List<Integer> getCalcSizeComplexity(File f) throws IOException;
 }

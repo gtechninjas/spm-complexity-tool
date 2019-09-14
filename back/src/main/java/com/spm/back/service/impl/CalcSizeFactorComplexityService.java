@@ -45,11 +45,12 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	}
 	
 	@Override
-	public List<Integer> getCalcSizeComplexity(File f) throws IOException{
+	public List<Integer> getCalcSizeComplexity(String filePath) throws IOException{
+		
+		File file = new File(filePath);
 		List<Integer> listedSizeComplexities = new ArrayList<Integer>();
-		FileReader fileReader = new FileReader(f);
+		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		String filePath = f.getPath();
 		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
         String fileType = getFileType(filePath);
 		String line = null;

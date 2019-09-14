@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/complexity")
-public class ComplexityCalcController {
+public class ComplexitySizeFactorCalcController {
 	
 	@GetMapping("/size")
 	public ResponseEntity<?> getKeywordById(@PathVariable("id") Long id) {

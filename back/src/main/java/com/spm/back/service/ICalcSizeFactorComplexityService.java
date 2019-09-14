@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ICalcSizeFactorComplexityService {
 
-	List<Integer> getCalcSizeComplexity(File f) throws IOException;
+	List<Integer> getCalcSizeComplexity(String filePath) throws IOException;
 }

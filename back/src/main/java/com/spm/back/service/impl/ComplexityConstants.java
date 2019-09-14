@@ -25,7 +25,7 @@ public class ComplexityConstants {
 	public static String SPECIAL_KEYWORDS[] = { "new", "delete", "throws", "throw" };
 	public static String REFERENCE = "&";
 	public static String DEREFERENCE = "*";
-
+	public static String DATA_TYPES[] = {"boolean","char","byte","byte","int","long","float","double","void"};
 	public static String NON_VALUE_EXCLUDE_LINE_KEYWORD[] = { "class", "else", "try", "include", "import", "//" };
 	
 	public static String NON_VALUE_EXCLUDE_LINE_KEYWORD_CONTROL_TYPE[] = { "class", "try", "include", "import", "//" };

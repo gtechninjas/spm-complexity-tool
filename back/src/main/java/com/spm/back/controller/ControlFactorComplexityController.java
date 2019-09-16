@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +31,10 @@ public class ControlFactorComplexityController {
 		ResponseEntity<?> responseEntity = null;
 		try {
 			List<String> getControlTypeValueList = calcControlStructureFactorComplexityService.getCalcControlTypeComplexity(filepath);
+			responseEntity = new ResponseEntity<>(getControlTypeValueList, HttpStatus.OK);
 		} catch (IOException e) {
 			System.out.println("Error has occurred");
+			responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
 		}
 		return responseEntity;
 	}
@@ -45,8 +48,10 @@ public class ControlFactorComplexityController {
 		ResponseEntity<?> responseEntity = null;
 		try {
 			List<String> getNestedValueList = calcControlStructureFactorComplexityService.getCalcControlComplexity_Nested(filepath);
+			responseEntity = new ResponseEntity<>(getNestedValueList, HttpStatus.OK);
 		} catch (IOException e) {
 			System.out.println("Error has occurred");
+			responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
 		}
 		return responseEntity;
 	}

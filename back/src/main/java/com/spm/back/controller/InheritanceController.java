@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +38,10 @@ public class InheritanceController {
 		ResponseEntity<?> responseEntity = null;
 		try {
 			List<Integer> getInheritanceValueList = inheritanceServiceImpl.getCalcInheritanceComplexity(filepath);
+			responseEntity = new ResponseEntity<>(getInheritanceValueList, HttpStatus.OK);
 		} catch (IOException e) {
 			System.out.println("Error has occurred");
+			responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
 		}
 		return responseEntity;
 	}

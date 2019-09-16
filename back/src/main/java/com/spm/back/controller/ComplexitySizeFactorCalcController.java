@@ -26,6 +26,9 @@ public class ComplexitySizeFactorCalcController {
 	public ResponseEntity<?> getComplexityByFilePath(@SessionAttribute(name = "filepath")
     String filepath) {
 		ResponseEntity<?> responseEntity = null;
+		if(filepath != null) {
+			System.out.println("No file");
+		}
 		try {
 			List<Integer> getSizeValueList = calcSizeFactorComplexityService.getCalcSizeComplexity(filepath);
 		} catch (IOException e) {

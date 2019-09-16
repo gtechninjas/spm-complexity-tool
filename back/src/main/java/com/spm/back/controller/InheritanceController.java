@@ -31,6 +31,9 @@ public class InheritanceController {
 	@GetMapping("/inheritance")
 	public ResponseEntity<?> getComplexityByFilePath(@SessionAttribute(name = "filepath")
     String filepath) {
+		if(filepath != null) {
+			System.out.println("No file");
+		}
 		ResponseEntity<?> responseEntity = null;
 		try {
 			List<Integer> getInheritanceValueList = inheritanceServiceImpl.getCalcInheritanceComplexity(filepath);

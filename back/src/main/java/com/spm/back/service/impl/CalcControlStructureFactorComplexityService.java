@@ -25,8 +25,60 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 
 	@Autowired
 	ComplexityConstants complexityConstants;
-
+	
 	@Override
+	public List<String> getCalcControlTypeComplexity(String filePath) throws IOException{
+		
+		File file = new File(filePath);
+		List<String> listedControlTypeComplexities = new ArrayList<String>();
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+        String fileType = getFileType(filePath);
+		String line = null;
+		String controlTypeFctorComplexity = null;
+		while ((line = bufferedReader.readLine()) != null) {
+
+			if (complexityConstants.isNonValueExcludeLine(line)) {
+				continue;
+			}
+			
+			controlTypeFctorComplexity = getControlTypeComplexityCostPerLine_BasedOnType(line);
+			listedControlTypeComplexities.add(controlTypeFctorComplexity);
+
+		}
+		return listedControlTypeComplexities;
+		
+	}
+	@Override
+	public List<String> getCalcControlComplexity_Nested(String filePath) throws IOException{
+		
+		File file = new File(filePath);
+		List<String> listedNestedComplexities = new ArrayList<String>();
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
+        String fileType = getFileType(filePath);
+		String line = null;
+		String nestedFctorComplexity = null;
+		while ((line = bufferedReader.readLine()) != null) {
+
+			if (complexityConstants.isNonValueExcludeLine(line)) {
+				continue;
+			}
+			
+			nestedFctorComplexity = getControlComplexity_NestedPerLine(line);
+			listedNestedComplexities.add(nestedFctorComplexity);
+
+		}
+		return listedNestedComplexities;
+		
+	}
+	
+	public String getControlComplexity_NestedPerLine(String line) {
+	  return null;	
+	}
+
 	public String getControlTypeComplexityKeyword_Nested(String line) {
 
 		List<String> valuedCollectiveList = new ArrayList<String>();
@@ -160,7 +212,6 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		return controlTypeComplexityTotalPerLine;
 	}
 
-	@Override
 	public String getControlTypeComplexityCostPerLine_BasedOnType(String line) {
 
 		String calculatedControlTypeComplexity;

@@ -1,9 +1,12 @@
 package com.spm.back.service;
 
+import java.io.IOException;
+import java.util.List;
+
 public interface ICalcControlStructureFactorComplexityService {
 
-	String getControlTypeComplexityCostPerLine_BasedOnType(String line);
-	
-	String getControlTypeComplexityKeyword_Nested(String line);
+	List<String> getCalcControlTypeComplexity(String filePath) throws IOException;
+
+	List<String> getCalcControlComplexity_Nested(String filePath) throws IOException;
 
 }

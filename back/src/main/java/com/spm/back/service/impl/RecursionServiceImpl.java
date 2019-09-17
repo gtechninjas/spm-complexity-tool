@@ -15,17 +15,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.spm.back.service.RecursionService;
-
+@Service
+@Transactional
 public class RecursionServiceImpl implements RecursionService {
 	
 	@Autowired
 	private ComplexityConstants complexityConstants;
-	
-	
-	private RecursionServiceImpl recursionServiceImpl = new RecursionServiceImpl();
 	
 	@Override
 	public List<Integer> getCalcRecursionComplexity(String filePath) throws IOException{
@@ -45,7 +46,8 @@ public class RecursionServiceImpl implements RecursionService {
 				continue;
 			}
 			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
-			recursionCount = recursionServiceImpl.calculateRecurionMethod(wordArrayList);
+			recursionCount = calculateRecurionMethod(wordArrayList);
+			listedRecursionComplexities.add(recursionCount);
 		}
 		return listedRecursionComplexities;
 		

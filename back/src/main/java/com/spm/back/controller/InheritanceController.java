@@ -30,9 +30,10 @@ public class InheritanceController {
 	private InheritanceServiceImpl inheritanceServiceImpl;
 	
 	@GetMapping("/inheritance")
-	public ResponseEntity<?> getComplexityByFilePath(@SessionAttribute(name = "filepath")
-    String filepath) {
-		if(filepath != null) {
+	public ResponseEntity<?> getComplexityByFilePath() {
+		
+		String filepath = "C:\\Users\\diaalk\\Desktop\\Test.java";
+		if(filepath == null) {
 			System.out.println("No file");
 		}
 		ResponseEntity<?> responseEntity = null;

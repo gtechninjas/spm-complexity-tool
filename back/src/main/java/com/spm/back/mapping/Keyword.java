@@ -56,7 +56,7 @@ public class Keyword implements java.io.Serializable {
 		return language;
 	}
 
-	public void setLanguages(String language) {
+	public void setLanguage(String language) {
 		this.language = language;
 	}
 

@@ -24,10 +24,10 @@ public class ComplexitySizeFactorCalcController {
 	private CalcSizeFactorComplexityService calcSizeFactorComplexityService; 
 	
 	@GetMapping("/size")
-	public ResponseEntity<?> getComplexityByFilePath(@SessionAttribute(name = "filepath")
-    String filepath) {
+	public ResponseEntity<?> getComplexityByFilePath() {
 		ResponseEntity<?> responseEntity = null;
-		if(filepath != null) {
+		String filepath = "C:\\Users\\diaalk\\Desktop\\Test.java";
+		if(filepath == null) {
 			System.out.println("No file");
 		}
 		try {

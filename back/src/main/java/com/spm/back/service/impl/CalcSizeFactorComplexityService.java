@@ -58,11 +58,12 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		while ((line = bufferedReader.readLine()) != null) {
 
 			if (complexityConstants.isNonValueExcludeLine(line)) {
-				continue;
+				sizeFctorComplexity = 0;
 			}
-			
-			sizeFctorComplexity = calculateSizefactorPerLine(line, fileType);
-			listedSizeComplexities.add(sizeFctorComplexity);
+			else {
+			    sizeFctorComplexity = calculateSizefactorPerLine(line, fileType);			   
+			}
+			 listedSizeComplexities.add(sizeFctorComplexity);
 
 		}
 		return listedSizeComplexities;
@@ -194,7 +195,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	public int getSizeComplexity_Keyword(String line) {
 
 		int costForKeyword_BasedOnLine = 0;
-		String whitespace =  "\\s+";
+		String whitespace =  "([\"\\s+\"]|[\"\\(\"])+";
 		
 		List<String> singleValuedCollectiveList = new ArrayList<String>();
 		singleValuedCollectiveList.addAll(Arrays.asList(ComplexityConstants.KEY_WORDS));
@@ -206,22 +207,23 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		Pattern pattern;
 
 		for (String singleValuedKey : singleValuedCollectiveList) {
-			String regExp = whitespace +singleValuedKey+whitespace;
+			String regExp = singleValuedKey+whitespace;
 			pattern = Pattern.compile(regExp);
 			Matcher matcher = pattern.matcher(line);
 			while (matcher.find()) {
-				
+				System.out.println("1OK : "+matcher.group());
 				costForKeyword_BasedOnLine++;				
 			}
 			line = matcher.replaceAll(" ");
 		}
 		
 		for (String doubleValuedKey : doubleValuedCollectiveList) {
-			String regExp = whitespace +doubleValuedKey+whitespace;
+			String regExp = doubleValuedKey+whitespace;
 			pattern = Pattern.compile(regExp);
 			Matcher matcher = pattern.matcher(line);
 			while (matcher.find()) {
 				
+				System.out.println("2OK : "+matcher.group());
 				costForKeyword_BasedOnLine += 2;
 				
 			}
@@ -234,6 +236,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 
 	public String replaceKeywords_WithWhiteSpace(String line) {
         
+		String whitespace =  "([\"\\s+\"]|[\"\\(\"])+";
 		List<String> collectiveLsit = new ArrayList<String>();
 		collectiveLsit.addAll(Arrays.asList(ComplexityConstants.KEY_WORDS));
         collectiveLsit.addAll(Arrays.asList(ComplexityConstants.MANIPULATORS));
@@ -243,7 +246,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 
 		for (String keyword : collectiveLsit) {
 			String regExp = keyword;
-			pattern = Pattern.compile(regExp);
+			pattern = Pattern.compile(regExp+whitespace);
 			Matcher matcher = pattern.matcher(line);
 			while (matcher.find()) {
 				line = matcher.replaceAll(" ");
@@ -260,6 +263,8 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 			return 0;
 		}
 		String splittedArr[] = line.trim().split("\\s+");
+		for(String spliitedWord:splittedArr )
+		    System.out.println("VAR_LIST "+spliitedWord);
 		variableNameCounter = splittedArr.length;
 		
 		return variableNameCounter;

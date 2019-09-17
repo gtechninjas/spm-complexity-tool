@@ -51,7 +51,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 				continue;
 			}
 			
-			sizeFctorComplexity = showResourceData(line);
+			sizeFctorComplexity = showResourceData(filePath);
 			listedInheritanceComplexities.add(sizeFctorComplexity);
 
 		}
@@ -96,6 +96,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 				}
 
 				complexity = ancClasses;
+				complexity++;
 
 			case "cp":
 				ancestorClasses = this.processCplusCode(reader, ancestorClasses);
@@ -115,9 +116,8 @@ public class InheritanceServiceImpl implements IInheritanceService{
 					}
 				}
 				complexity = ancClasses;
-
-			default:
-				complexity = 0;
+				complexity++;
+			
 			}
 
 		} catch (IOException e) {
@@ -163,6 +163,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 			}
 
 			numberOfLines++;
+
 		}
 
 		return ancestorClasses;

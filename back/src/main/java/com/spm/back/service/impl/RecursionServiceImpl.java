@@ -21,55 +21,167 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spm.back.service.RecursionService;
+
 @Service
 @Transactional
 public class RecursionServiceImpl implements RecursionService {
-	
+
 	@Autowired
 	private ComplexityConstants complexityConstants;
-	
-	@Override
-	public List<Integer> getCalcRecursionComplexity(String filePath) throws IOException{
+
+	@Autowired
+	private CalcSizeFactorComplexityService calcSizeFactorComplexityService;
+
+	@Autowired
+	private CalcControlStructureFactorComplexityService calcControlStructureFactorComplexityService;
+
+	@Autowired
+	private InheritanceServiceImpl inheritanceServiceImpl;
+
+	public List<String> getComplexityProgramConstant(List<String> controlTypeList, List<String> nestedList,
+			List<Integer> inheritanceList, List<Integer> sizeList, int totLineCounter) {
+		List<String> programConstantList = new ArrayList<String>();
 		
+		for (int i = 0; i <= totLineCounter--; i++) {
+			String recursionVal = "";
+			int controlTypeVal = 0;
+			int nestedVal = 0;
+			int programsConstantVal = 0;
+			try {
+				controlTypeVal = Integer.parseInt(controlTypeList.get(i));
+			} catch (NumberFormatException e) {
+				System.out.println(controlTypeList.get(i));
+			}
+			try {
+				nestedVal = Integer.parseInt(nestedList.get(i));
+			} catch (NumberFormatException e) {
+				System.out.println(nestedList.get(i));
+			}
+            if(controlTypeVal != 0 && nestedVal != 0) {
+            	programsConstantVal = controlTypeVal + nestedVal + inheritanceList.get(i);
+            	programConstantList.add(programsConstantVal* sizeList.get(i)+"");
+            }
+            if(controlTypeVal == 0 && nestedVal != 0) {
+            	programsConstantVal = controlTypeVal + inheritanceList.get(i);
+            	programConstantList.add("("+programsConstantVal+"+"+nestedList.get(i)+")"+ sizeList.get(i));
+            }
+            if(controlTypeVal != 0 && nestedVal == 0) {
+            	programsConstantVal = nestedVal + inheritanceList.get(i);
+            	programConstantList.add("("+programsConstantVal+"+"+controlTypeList.get(i)+")"+ sizeList.get(i));
+            }
+            if(controlTypeVal == 0 && nestedVal == 0) {
+            	programConstantList.add("("+nestedList.get(i)+"+"+controlTypeList.get(i)+"+"+ inheritanceList.get(i)+")"+ sizeList.get(i));
+            }
+		}
+		return programConstantList;
+	}
+
+	@Override
+	public List<String> getCalcRecursionComplexity(String filePath) throws IOException {
+
 		File file = new File(filePath);
-		List<Integer> listedRecursionComplexities = new ArrayList<Integer>();
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
 		String line = null;
-		int sizeFctorComplexity = 0;
-		int recursionCount = 0;
-		
-		while ((line = bufferedReader.readLine()) != null) {
+		List<String> recursionList = new ArrayList<String>();
+		List<String> controlTypeList = calcControlStructureFactorComplexityService
+				.getCalcControlTypeComplexity(filePath);
+		List<String> nestedList = calcControlStructureFactorComplexityService.getCalcControlComplexity_Nested(filePath);
+		List<Integer> inheritanceList = inheritanceServiceImpl.getCalcInheritanceComplexity(filePath);
+		List<Integer> sizeList = calcSizeFactorComplexityService.getCalcSizeComplexity(filePath);
+		int recursionFctorComplexity = 0;
+		int lineCounter = 0;
+		int lineTotal = 0;
+		int start = 0;
+		int end = 0;
+		List<Integer> startAndEndLineList = new ArrayList<Integer>();
+		String extractedMethodName = null;
+		List<String> extractedMethodNameList_Lines = getAllMethodNameLines(file);
 
-			if (complexityConstants.isNonValueExcludeLine(line)) {
-				continue;
-			}
-			List<String> wordArrayList = Arrays.asList(line.split("\\s+"));
-			recursionCount = calculateRecurionMethod(wordArrayList);
-			listedRecursionComplexities.add(recursionCount);
+		int cpsValue = 1;
+		while ((line = bufferedReader.readLine()) != null) {
+			lineTotal++;
 		}
-		return listedRecursionComplexities;
-		
+		List<String> cpsValueList = getComplexityProgramConstant(controlTypeList, nestedList, inheritanceList,
+				sizeList, lineTotal);
+		String recursionArr[] = new String[lineTotal - 1];
+		Arrays.fill(recursionArr, "0");
+		for (String extractedMethodName_Line : extractedMethodNameList_Lines) {
+			extractedMethodName = getExtractedMethodNames(extractedMethodName_Line);
+			if (methodRecursionStartAndEnd(file, extractedMethodName_Line, extractedMethodName) != null) {
+				startAndEndLineList
+						.addAll(methodRecursionStartAndEnd(file, extractedMethodName_Line, extractedMethodName));
+				System.out.println("METHOD " + extractedMethodName);
+			}
+		}
+		System.out.println("ITERATIONS " + startAndEndLineList.size() / 2);
+		for (int i = 1; i <= startAndEndLineList.size() / 2; i++) {
+			start = startAndEndLineList.get(i - 1) - 1;
+			end = startAndEndLineList.get(i);
+			for (int j = start; j <= end; j++) {
+				try {
+					recursionArr[j] = (Integer.parseInt(cpsValueList.get(j)) * 2)+"";
+				}
+				catch (NumberFormatException e) {
+					recursionArr[j] = "("+cpsValueList.get(j)+")"+2;
+				}
+				
+			}
+		}
+		for (String val : recursionArr) {
+			recursionList.add(val);
+		}
+		return recursionList;
+
 	}
 
-	@Override
-	public List<String> getAllMethods(File file) {
+	public String replaceKeywords_WithWhiteSpace(String line) {
+
+		String whitespace = "([\"\\s+\"]|[\"\\(\"])+";
+		List<String> collectiveLsit = new ArrayList<String>();
+		collectiveLsit.addAll(Arrays.asList(ComplexityConstants.KEY_WORDS));
+		collectiveLsit.addAll(Arrays.asList(ComplexityConstants.MANIPULATORS));
+		collectiveLsit.addAll(Arrays.asList(ComplexityConstants.SPECIAL_KEYWORDS));
+		collectiveLsit.addAll(Arrays.asList(ComplexityConstants.NON_VALUE_EXCLUDE_KEYWORD));
+		Pattern pattern;
+
+		for (String keyword : collectiveLsit) {
+			String regExp = keyword;
+			pattern = Pattern.compile(regExp + whitespace);
+			Matcher matcher = pattern.matcher(line);
+			while (matcher.find()) {
+				line = matcher.replaceAll(" ");
+			}
+		}
+
+		return line;
+	}
+
+	public String getExtractedMethodNames(String methodLine) {
+		if (methodLine != null) {
+			return replaceKeywords_WithWhiteSpace(methodLine).trim().split("\\(")[0];
+		}
+		return null;
+	}
+
+	public List<String> getAllMethodNameLines(File file) {
 		List<String> getMethods = new ArrayList<>();
 		try {
-			// create class object
-			Class classobj = File.class;
-
-			// get list of methods
-			Method[] methods = classobj.getMethods();
-
-			// get the name of every method present in the list
-			for (Method method : methods) {
-
-				String MethodName = method.getName();
-				getMethods.add(MethodName);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String line = null;
+			while ((line = bufferedReader.readLine()) != null) {
+				Pattern p = Pattern.compile(
+						"(public|protected|private|static|\\s) +[\\w\\<\\>\\[\\]]+\\s+(\\w+) *\\([^\\)]*\\) *(\\{?|[^;])");
+				Matcher m = p.matcher(line);
+				while (m.find()) {
+					String methodNameLine = m.group();
+					getMethods.add(methodNameLine);
+				}
 
 			}
+
 			return getMethods;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,133 +189,41 @@ public class RecursionServiceImpl implements RecursionService {
 		return null;
 	}
 
-	@Override
-	public Boolean checkRecursionPresent(File file) throws FileNotFoundException, IOException {
-		List<String> list = new ArrayList<>();
-		List<String> methodList = new ArrayList<>();
-		int recursionCall = 0;
-		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-			list = br.lines().collect(Collectors.toList());
-			methodList = getAllMethods(file);
-			recursionCall = getDupCount(methodList);
-			if (recursionCall > 0) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	public int getDupCount(List<String> l) {
-		int cnt = 0;
-		HashSet<String> h = new HashSet<String>(l);
-
-		for (String token : h) {
-			if (Collections.frequency(l, token) > 1)
-				cnt++;
-		}
-
-		return cnt;
-	}
-
-	@Override
-	public int calculateRecurionOccurence(List<String> line) {
-		int index = 0;
-		int indexOfMethod = 0;
-		List<String> methods = new ArrayList<>();
-		for (String word : line) {
-			for (String dataType : ComplexityConstants.DATA_TYPES) {
-				if (word.contains(dataType)) {
-					index = line.indexOf(word);
-					indexOfMethod = index + 1;
-					methods.add(line.get(indexOfMethod));
-				}
-			}
-		}
-		return 0;
-
-	}
-
-	@Override
-	public int calculateRecurionMethod(List<String> words) {
-
-		String s = null;
-
-		int isString = 0;
-		String input1 = "public";
-		String input2 = "void";
-		String input3 = "(";
-		String input4 = "static";
-		String input5 = "int";
-		String input6 = "String";
-		String input7 = "float";
-		int count = 0;
-        int tempCount = 0; // to keep local count of matched numbers
-        List<String> duplicates = new ArrayList<>();
-		int insideMethod = 1;
-
+	public List<Integer> methodRecursionStartAndEnd(File file, String methodLineName, String methodName)
+			throws FileNotFoundException, IOException {
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String line = null;
+		List<Integer> startAndEndLineNumber = new ArrayList<Integer>();
 		String open = "{";
 		String closed = "}";
-		int bracket = 0;
-
-		String methodName = null;
-		List<String> methodList = new ArrayList<>();
-
-		int k = 0;
-
-		for (int i = 0; i < words.size(); i++) {
-			for (int j = 0; j < words.get(i).length(); j++) {
-				char ch = words.get(i).charAt(j); // Read the word char by char
-				if (ch == '"') {
-					isString = isString + 1;
-				}
+		Boolean isRecursion = false;
+		int lineCounter = 0;
+		int braceCounter = 0;
+		while ((line = bufferedReader.readLine()) != null) {
+			lineCounter++;
+			if (line.contains(methodLineName)) {
+				System.out.println("START " + lineCounter);
+				startAndEndLineNumber.add(lineCounter);
+			}
+			System.out.println(braceCounter);
+			if (line.contains("return "))
+				System.out.println("YES " + methodName);
+			if (line.contains("return ") && braceCounter > 0 && line.contains(methodName)) {
+				startAndEndLineNumber.add(lineCounter);
+				break;
+			}
+			if (line.contains("{") && startAndEndLineNumber.size() == 1) {
+				braceCounter++;
+			} else if (line.contains("}")) {
+				braceCounter--;
 			}
 		}
-		for (String word : words) {
-			s = word;
-			if (isString % 2 == 0) {
-				if (s.contains(input1) && s.contains(input3)
-						&& (s.contains(input2) || s.contains(input5) || s.contains(input6) || s.contains(input7))) {
-					int l = 2;
-					String mName[] = null;
-
-					if (s.contains(input4)) {
-						l++;
-					}
-					methodName = words.get(l);
-					// Inserting the method names to the array list
-					methodList.add(methodName);
-					insideMethod++;
-				}
-
-				if (insideMethod > 0) {
-					if (s.contains(open)) {
-						bracket++;
-					}
-					if (s.contains(closed)) {
-						bracket--;
-					}
-				}
-			}
+		System.out.println(startAndEndLineNumber);
+		if (startAndEndLineNumber.size() != 2) {
+			return null;
 		}
-		
-		 for (int i = 1; i < methodList.size(); i++) {
-	            if (methodList.get(i) == methodList.get(i - 1)) {
-	                if ((tempCount == 0)) { // If same method is repeated more than
-	                                        // two times, like TEST, TEST
-	                    count = count + 1;
-	                    tempCount = tempCount + 1;
-	                    duplicates.add(methodList.get(i));
-	                }
-	            } else {
-	                tempCount = 0;
-	            }
-	        }
-		
-		return duplicates.size();
+		return startAndEndLineNumber;
 	}
 
 }
-
-
-

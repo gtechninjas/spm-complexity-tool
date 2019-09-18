@@ -26,12 +26,12 @@ public class RecursionController {
 	public ResponseEntity<?> getComplexityByFilePath() {
 		
 		String filepath = "C:\\Users\\diaalk\\Desktop\\Test.java";
-		if(filepath != null) {
+		if(filepath == null) {
 			System.out.println("No file");
 		}
 		ResponseEntity<?> responseEntity = null;
 		try {
-			List<Integer> getRecursionValueList = recursionServiceImpl.getCalcRecursionComplexity(filepath);
+			List<String> getRecursionValueList = recursionServiceImpl.getCalcRecursionComplexity(filepath);
 			responseEntity = new ResponseEntity<>(getRecursionValueList, HttpStatus.OK);
 		} catch (IOException e) {
 			System.out.println("Error has occurred");

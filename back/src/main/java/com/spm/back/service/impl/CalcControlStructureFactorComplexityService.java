@@ -215,9 +215,13 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 	public String getControlTypeComplexityCostPerLine_BasedOnType(String line) {
 
 		String calculatedControlTypeComplexity;
-
-		calculatedControlTypeComplexity = getControlTypeComplexity(line) + " "
-				+ calculateSwitchControlTypeComplexity_BasedOnType(line).size() + "n";
+        if(calculateSwitchControlTypeComplexity_BasedOnType(line) != null) {
+        	calculatedControlTypeComplexity = getControlTypeComplexity(line) + " "
+    				+ calculateSwitchControlTypeComplexity_BasedOnType(line).size() + "n";
+        }
+        else {
+        	calculatedControlTypeComplexity = getControlTypeComplexity(line) + " ";
+        }
 		return calculatedControlTypeComplexity;
 	}
 

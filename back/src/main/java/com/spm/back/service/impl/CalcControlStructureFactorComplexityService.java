@@ -76,7 +76,7 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 	}
 	
 	public String getControlComplexity_NestedPerLine(String line) {
-	  return null;	
+	  return "";	
 	}
 
 	public String getControlTypeComplexityKeyword_Nested(String line) {

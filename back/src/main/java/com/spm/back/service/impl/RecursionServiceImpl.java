@@ -37,41 +37,70 @@ public class RecursionServiceImpl implements RecursionService {
 
 	@Autowired
 	private InheritanceServiceImpl inheritanceServiceImpl;
+	
+	private static boolean TryParse(String input) {
+		try {
+			Integer.parseInt(input.trim());		
+			return true;
+		}
+		catch (NumberFormatException e) {
+			return false; 
+		}
+	}
+
+		
 
 	public List<String> getComplexityProgramConstant(List<String> controlTypeList, List<String> nestedList,
 			List<Integer> inheritanceList, List<Integer> sizeList, int totLineCounter) {
 		List<String> programConstantList = new ArrayList<String>();
-		
-		for (int i = 0; i <= totLineCounter--; i++) {
+		totLineCounter--;
+		for (int i = 0; i <= totLineCounter; i++) {
 			String recursionVal = "";
 			int controlTypeVal = 0;
 			int nestedVal = 0;
 			int programsConstantVal = 0;
-			try {
-				controlTypeVal = Integer.parseInt(controlTypeList.get(i));
-			} catch (NumberFormatException e) {
-				System.out.println(controlTypeList.get(i));
+			boolean isStringControlType = false;
+			boolean isStringNested = false;
+			
+			System.out.println("LINE NUM "+i+" CONTROL TYPE VAL: "+controlTypeList.get(i));
+			System.out.println("LINE NUM "+i+" NESTED TYPE VAL: "+nestedList.get(i));
+			if(controlTypeList.get(i) == null || controlTypeList.get(i) == "" ||TryParse(controlTypeList.get(i))) {
+				System.out.println("TRUE INT CONTROL TYPE");
+				if(controlTypeList.get(i) == null|| controlTypeList.get(i) == "") {
+					
+					controlTypeVal = 0;
+				}
+				else {
+					controlTypeVal = Integer.parseInt(controlTypeList.get(i).trim());
+				}
+				isStringControlType = true;
 			}
-			try {
-				nestedVal = Integer.parseInt(nestedList.get(i));
-			} catch (NumberFormatException e) {
-				System.out.println(nestedList.get(i));
+			if(nestedList.get(i) == null || nestedList.get(i) == "" || TryParse(nestedList.get(i))) {
+				System.out.println("TRUE INT NESTED TYPE");
+				if(nestedList.get(i) == null|| nestedList.get(i) == "") {
+					nestedVal = 0;
+				}
+				else {
+					nestedVal = Integer.parseInt(nestedList.get(i).trim());
+				}
+				isStringNested = true;
 			}
-            if(controlTypeVal != 0 && nestedVal != 0) {
-            	programsConstantVal = controlTypeVal + nestedVal + inheritanceList.get(i);
-            	programConstantList.add(programsConstantVal* sizeList.get(i)+"");
-            }
-            if(controlTypeVal == 0 && nestedVal != 0) {
-            	programsConstantVal = controlTypeVal + inheritanceList.get(i);
-            	programConstantList.add("("+programsConstantVal+"+"+nestedList.get(i)+")"+ sizeList.get(i));
-            }
-            if(controlTypeVal != 0 && nestedVal == 0) {
-            	programsConstantVal = nestedVal + inheritanceList.get(i);
-            	programConstantList.add("("+programsConstantVal+"+"+controlTypeList.get(i)+")"+ sizeList.get(i));
-            }
-            if(controlTypeVal == 0 && nestedVal == 0) {
-            	programConstantList.add("("+nestedList.get(i)+"+"+controlTypeList.get(i)+"+"+ inheritanceList.get(i)+")"+ sizeList.get(i));
-            }
+			if(isStringControlType == true && isStringNested == true) {
+				programsConstantVal = (controlTypeVal+nestedVal+inheritanceList.get(i)) *sizeList.get(i);
+				programConstantList.add(programsConstantVal+"");
+			}
+			if(isStringControlType == true && isStringNested != true) {
+				programsConstantVal = controlTypeVal+inheritanceList.get(i);				
+				programConstantList.add("("+programsConstantVal+"+"+nestedList.get(i)+")" +sizeList.get(i));
+			}
+			if(isStringControlType != true && isStringNested == true) {
+				programsConstantVal = nestedVal+inheritanceList.get(i);				
+				programConstantList.add("("+programsConstantVal+"+"+controlTypeList.get(i)+")" +sizeList.get(i));
+			}
+			if(isStringControlType != true && isStringNested != true) {
+				programsConstantVal = inheritanceList.get(i);				
+				programConstantList.add("("+programsConstantVal+"+"+nestedList+"+"+controlTypeList.get(i)+")" +sizeList.get(i));
+			}
 		}
 		return programConstantList;
 	}

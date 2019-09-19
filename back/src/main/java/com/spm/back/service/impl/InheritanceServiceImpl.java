@@ -48,10 +48,13 @@ public class InheritanceServiceImpl implements IInheritanceService{
 		while ((line = bufferedReader.readLine()) != null) {
 
 			if (complexityConstants.isNonValueExcludeLine(line)) {
-				continue;
+				sizeFctorComplexity = 0;
+			}
+			else {
+				sizeFctorComplexity = showResourceData(filePath);
 			}
 			
-			sizeFctorComplexity = showResourceData(filePath);
+			
 			listedInheritanceComplexities.add(sizeFctorComplexity);
 
 		}

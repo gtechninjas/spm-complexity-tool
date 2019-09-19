@@ -40,10 +40,13 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		while ((line = bufferedReader.readLine()) != null) {
 
 			if (complexityConstants.isNonValueExcludeLine(line)) {
-				continue;
+				controlTypeFctorComplexity = null;
+			}
+			else {
+				controlTypeFctorComplexity = getControlTypeComplexityCostPerLine_BasedOnType(line);
 			}
 			
-			controlTypeFctorComplexity = getControlTypeComplexityCostPerLine_BasedOnType(line);
+			
 			listedControlTypeComplexities.add(controlTypeFctorComplexity);
 
 		}
@@ -64,10 +67,13 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		while ((line = bufferedReader.readLine()) != null) {
 
 			if (complexityConstants.isNonValueExcludeLine(line)) {
-				continue;
+				nestedFctorComplexity = null;
+			}
+			else {
+				nestedFctorComplexity = getControlComplexity_NestedPerLine(line);
 			}
 			
-			nestedFctorComplexity = getControlComplexity_NestedPerLine(line);
+			
 			listedNestedComplexities.add(nestedFctorComplexity);
 
 		}

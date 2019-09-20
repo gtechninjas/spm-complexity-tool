@@ -48,11 +48,11 @@ public class RecursionServiceImpl implements RecursionService {
 		}
 	}
 
+	@Override
+	public List<String> getTotalWeightList(List<String> controlTypeList, List<String> nestedList,
+			List<Integer> inheritanceList,int totLineCounter) {
 		
-
-	public List<String> getComplexityProgramConstant(List<String> controlTypeList, List<String> nestedList,
-			List<Integer> inheritanceList, List<Integer> sizeList, int totLineCounter) {
-		List<String> programConstantList = new ArrayList<String>();
+		List<String> totalWeightList = new ArrayList<String>();
 		totLineCounter--;
 		for (int i = 0; i <= totLineCounter; i++) {
 			String recursionVal = "";
@@ -86,20 +86,51 @@ public class RecursionServiceImpl implements RecursionService {
 				isStringNested = true;
 			}
 			if(isStringControlType == true && isStringNested == true) {
-				programsConstantVal = (controlTypeVal+nestedVal+inheritanceList.get(i)) *sizeList.get(i);
-				programConstantList.add(programsConstantVal+"");
+				programsConstantVal = (controlTypeVal+nestedVal+inheritanceList.get(i));
+				totalWeightList.add(programsConstantVal+"");
 			}
 			if(isStringControlType == true && isStringNested != true) {
 				programsConstantVal = controlTypeVal+inheritanceList.get(i);				
-				programConstantList.add("("+programsConstantVal+"+"+nestedList.get(i)+")" +sizeList.get(i));
+				totalWeightList.add("("+programsConstantVal+"+"+nestedList.get(i)+")");
 			}
 			if(isStringControlType != true && isStringNested == true) {
 				programsConstantVal = nestedVal+inheritanceList.get(i);				
-				programConstantList.add("("+programsConstantVal+"+"+controlTypeList.get(i)+")" +sizeList.get(i));
+				totalWeightList.add("("+programsConstantVal+"+"+controlTypeList.get(i)+")");
 			}
 			if(isStringControlType != true && isStringNested != true) {
 				programsConstantVal = inheritanceList.get(i);				
-				programConstantList.add("("+programsConstantVal+"+"+nestedList+"+"+controlTypeList.get(i)+")" +sizeList.get(i));
+				totalWeightList.add("("+programsConstantVal+"+"+nestedList+"+"+controlTypeList.get(i)+")");
+			}
+		}
+		System.out.println("TOTAL WEIGHT LIST"+totalWeightList);
+		return totalWeightList;
+		
+	}
+    @Override
+	public List<String> getComplexityProgramConstant(List<String> totalWeightList,List<Integer> sizeList, int totLineCounter) {
+		List<String> programConstantList = new ArrayList<String>();
+		for (int i = 0; i < totLineCounter; i++) {
+			int totalWeightVal = 0;
+			int programsConstantVal = 0;
+			boolean isIntTotalWeight = false;
+
+			if(totalWeightList.get(i) == null || totalWeightList.get(i) == "" ||TryParse(totalWeightList.get(i))) {
+				System.out.println("TRUE INT TOTAL WEIGHT");
+				if(totalWeightList.get(i) == null|| totalWeightList.get(i) == "") {
+					
+					totalWeightVal = 0;
+				}
+				else {
+					totalWeightVal = Integer.parseInt(totalWeightList.get(i).trim());
+				}
+				isIntTotalWeight = true;
+			}
+			if(isIntTotalWeight == true) {
+				programsConstantVal = (totalWeightVal) *sizeList.get(i);
+				programConstantList.add(programsConstantVal+"");
+			}
+			if(isIntTotalWeight != true) {			
+				programConstantList.add("("+totalWeightList.get(i).trim()+")" +sizeList.get(i));
 			}
 		}
 		return programConstantList;
@@ -132,9 +163,10 @@ public class RecursionServiceImpl implements RecursionService {
 		while ((line = bufferedReader.readLine()) != null) {
 			lineTotal++;
 		}
-		List<String> cpsValueList = getComplexityProgramConstant(controlTypeList, nestedList, inheritanceList,
-				sizeList, lineTotal);
-		String recursionArr[] = new String[lineTotal - 1];
+		List<String> twValueList = getTotalWeightList(controlTypeList, nestedList, inheritanceList, lineTotal);
+		List<String> cpsValueList = getComplexityProgramConstant(twValueList, sizeList, lineTotal);
+		
+		String recursionArr[] = new String[lineTotal];
 		Arrays.fill(recursionArr, "0");
 		for (String extractedMethodName_Line : extractedMethodNameList_Lines) {
 			extractedMethodName = getExtractedMethodNames(extractedMethodName_Line);
@@ -161,6 +193,7 @@ public class RecursionServiceImpl implements RecursionService {
 		for (String val : recursionArr) {
 			recursionList.add(val);
 		}
+		System.out.println("RECURSION LIST "+recursionList);
 		return recursionList;
 
 	}

@@ -20,6 +20,9 @@ public class Keyword implements java.io.Serializable {
 	private String language;
 	private String value;
 
+	public Keyword() {
+	}
+
 	public Keyword(long keywordId) {
 		super();
 		this.keywordId = keywordId;
@@ -51,6 +54,7 @@ public class Keyword implements java.io.Serializable {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+
 	@Column(name = "language", nullable = false, length = 50)
 	public String getLanguage() {
 		return language;

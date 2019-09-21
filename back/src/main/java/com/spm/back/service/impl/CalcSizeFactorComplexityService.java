@@ -412,7 +412,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	public int getVariableNameCount(String line) {
 		
 		int variableNameCounter = 0;
-		if(line == null || line.isBlank()) {
+		if(line == null || line.isEmpty()) {
 			return 0;
 		}
 		String splittedArr[] = line.trim().split("\\s+");
@@ -426,7 +426,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
    public List<String> extractVariable(String line) {
 		
 		int variableNameCounter = 0;
-		if(line == null || line.isBlank()) {
+		if(line == null || line.isEmpty()) {
 			return null;
 		}
 		String splittedArr[] = line.trim().split("\\s+");

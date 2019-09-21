@@ -55,6 +55,7 @@ public class KeywordServiceImpl implements KeywordService {
 		keywordDTO.setKeword(keyword.getKeyword());
 		keywordDTO.setLanguage(keyword.getLanguage());
 		keywordDTO.setValue(keyword.getValue());
+		keywordDTO.setKeywordType(keyword.getKeywordType());
 		return keywordDTO;
 	}
 

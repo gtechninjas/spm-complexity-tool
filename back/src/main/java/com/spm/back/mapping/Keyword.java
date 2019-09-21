@@ -19,17 +19,28 @@ public class Keyword implements java.io.Serializable {
 	private String keyword;
 	private String language;
 	private String value;
+	private String keywordType;
 
 	public Keyword(long keywordId) {
 		super();
 		this.keywordId = keywordId;
 	}
-
-	public Keyword(String keyword, String language, String value) {
+	
+	public Keyword(String keyword, String language, String value, String keywordType) {
 		super();
 		this.keyword = keyword;
 		this.language = language;
 		this.value = value;
+		this.keywordType = keywordType;
+	}
+
+	@Column(name = "keywordtype", nullable = false, length = 50)
+	public String getKeywordType() {
+		return keywordType;
+	}
+
+	public void setKeywordType(String keywordType) {
+		this.keywordType = keywordType;
 	}
 
 	@Id

@@ -4,7 +4,17 @@ public class KeywordDTO {
 	private long keywordId;
 	private String keword;
 	private String language;
+	private String keywordType;
 	private String value;
+
+	
+	public String getKeywordType() {
+		return keywordType;
+	}
+
+	public void setKeywordType(String keywordType) {
+		this.keywordType = keywordType;
+	}
 
 	public long getKeywordId() {
 		return keywordId;

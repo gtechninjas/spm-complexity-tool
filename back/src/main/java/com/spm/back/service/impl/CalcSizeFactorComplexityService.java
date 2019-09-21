@@ -129,13 +129,19 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	    ArrayList<String> extractedTokenList = new ArrayList<String>();
 	    
 	    extractedTokenList.addAll(quotationsExtracted(line));
+	    System.out.println("********QUOTATIONS TOKEN LIST : "+quotationsExtracted(line));
 		line = quotationsOmmited(line).trim();
+		System.out.println("********QUOTATIONS OMMITED TOKEN LINE : "+line);
 		extractedTokenList.addAll(extractOperators(line, type));
+		System.out.println("********EXTRACTED OP LIST : "+extractOperators(line, type));
 		line = replaceOperators_WithWhiteSpace(line, type).trim();
+		System.out.println("********OPERATOR OMMITED TOKEN LINE : "+line);
 		extractedTokenList.addAll(extractKeywords(line));
+		System.out.println("********EXTRACTED KEYWORD LIST : "+extractKeywords(line));
 		line = replaceKeywords_WithWhiteSpace(line).trim();
-		extractedTokenList.addAll(extractedTokenList);
-		
+		System.out.println("********KEYWORDS OMMITED TOKEN LINE : "+line);
+		extractedTokenList.addAll(extractVariable(line));
+		System.out.println("********EXTRACTED VAR LIST : "+extractVariable(line));
 		
 		return extractedTokenList;
 		
@@ -412,25 +418,28 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	public int getVariableNameCount(String line) {
 		
 		int variableNameCounter = 0;
-		if(line == null || line.isBlank()) {
-			return 0;
-		}
+		try {
 		String splittedArr[] = line.trim().split("\\s+");
 		for(String spliitedWord:splittedArr )
 		    System.out.println("VAR_LIST "+spliitedWord);
 		variableNameCounter = splittedArr.length;
-		
+		}
+		catch (NullPointerException e) {
+			return 0;
+		}
 		return variableNameCounter;
 	}
 	
    public List<String> extractVariable(String line) {
 		
 		int variableNameCounter = 0;
-		if(line == null || line.isBlank()) {
+		String splittedArr[];
+		try {
+		  splittedArr = line.trim().split("\\s+");
+		}
+		catch (NullPointerException e) {
 			return null;
 		}
-		String splittedArr[] = line.trim().split("\\s+");
-		
 		
 		return Arrays.asList(splittedArr);
 	}

@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-md-12">
       <div class="col-md-4">
         <h3>File Path</h3>
@@ -12,12 +12,12 @@
       </div>
       <div class="col-md-2"></div>
     </div>
-  </div>
+  </div> -->
   <div class="row">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-info">
         <div class="card-body pb-0">
-          <div class="text-value">9.823</div>
+          <div class="text-value">{{totalRecursion}}</div>
           <div>Recursion</div>
         </div>
       </div>
@@ -26,7 +26,7 @@
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-primary">
         <div class="card-body pb-0">
-          <div class="text-value">9.823</div>
+          <div class="text-value">{{totalSize}}</div>
           <div>Complexity Size Factor</div>
         </div>
       </div>
@@ -35,7 +35,7 @@
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-warning">
         <div class="card-body pb-0">
-          <div class="text-value">9.823</div>
+          <div class="text-value">{{totalInheritance}}</div>
           <div>Inheritance</div>
         </div>
       </div>
@@ -44,8 +44,11 @@
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-danger">
         <div class="card-body pb-0">
-          <div class="text-value">9.823</div>
+          <div class="text-value">{{totalControl}}</div>
           <div>Control Factor Complexity</div>
+          <br/>
+          <div class="text-value">{{totalNested}}</div>
+          <div>Control Factor Complexity (Nested )</div>
         </div>
       </div>
     </div>

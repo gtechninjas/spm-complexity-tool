@@ -14,13 +14,16 @@ public class Operator implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	
+
 	private static final long serialVersionUID = -7843128777543947304L;
 	private long operatorId;
 	private String operator;
 	private String operatorType;
 	private String language;
 	private int value;
+
+	public Operator() {
+	}
 
 	public Operator(long operatorId) {
 		super();
@@ -54,6 +57,7 @@ public class Operator implements java.io.Serializable {
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
+
 	@Column(name = "language", nullable = false, length = 50)
 	public String getLanguage() {
 		return language;
@@ -80,9 +84,5 @@ public class Operator implements java.io.Serializable {
 	public void setOperatorType(String operatorType) {
 		this.operatorType = operatorType;
 	}
-
-	
-	
-	
 
 }

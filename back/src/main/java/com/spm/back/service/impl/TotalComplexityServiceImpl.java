@@ -142,9 +142,10 @@ public class TotalComplexityServiceImpl implements ITotalComplexityService{
 				}
 			}
 			
-			totalProgramComplexityVal_STRING = totalProgramComplexityVal_STRING + totalProgramComplexityVal_INT;
+			
 			
 		}
+		totalProgramComplexityVal_STRING = totalProgramComplexityVal_STRING + totalProgramComplexityVal_INT;
 		
 		return totalProgramComplexityVal_STRING;
 	}

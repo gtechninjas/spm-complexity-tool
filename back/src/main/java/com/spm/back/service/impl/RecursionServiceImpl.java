@@ -271,7 +271,7 @@ public class RecursionServiceImpl implements RecursionService {
 			System.out.println(braceCounter);
 			if (line.contains("return "))
 				System.out.println("YES " + methodName);
-			if (line.contains("return ") && braceCounter > 0 && line.contains(methodName)) {
+			if (line.contains("return ") && line.contains(methodName)) {
 				startAndEndLineNumber.add(lineCounter);
 				break;
 			}

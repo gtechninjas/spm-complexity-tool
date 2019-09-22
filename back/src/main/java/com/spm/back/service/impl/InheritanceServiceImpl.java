@@ -47,6 +47,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 		int sizeFctorComplexity = 0;
 		while ((line = bufferedReader.readLine()) != null) {
 
+			line = complexityConstants.extractComments(line);
 			if (complexityConstants.isNonValueExcludeLine(line)) {
 				sizeFctorComplexity = 0;
 			}
@@ -101,7 +102,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 				complexity = ancClasses;
 				complexity++;
 
-			case "cp":
+			case "cpp":
 				ancestorClasses = this.processCplusCode(reader, ancestorClasses);
 				ancClasses = ancClasses + ancestorClasses.size();
 				
@@ -111,7 +112,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 
 					for (String ancestorClass : ancestorClasses) {
 						
-						String classPath = classFolderPath + ancestorClass + ".java";
+						String classPath = classFolderPath + ancestorClass + ".cpp";
 
 						showResourceData(classPath);
 

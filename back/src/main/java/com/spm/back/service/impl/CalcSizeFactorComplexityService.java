@@ -62,7 +62,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		int sizeFctorComplexity = 0;
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
-				
+				line = complexityConstants.extractComments(line);
 				if (complexityConstants.isNonValueExcludeLine(line)) {
 					tokenList.add(null);
 				}
@@ -94,7 +94,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		String line = null;
 		int sizeFctorComplexity = 0;
 		while ((line = bufferedReader.readLine()) != null) {
-
+			line = complexityConstants.extractComments(line);
 			if (complexityConstants.isNonValueExcludeLine(line)) {
 				sizeFctorComplexity = 0;
 			}
@@ -419,6 +419,9 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		
 		int variableNameCounter = 0;
 		try {
+		if(line == null || line.isEmpty()) {
+			return 0;
+		}
 		String splittedArr[] = line.trim().split("\\s+");
 		for(String spliitedWord:splittedArr )
 		    System.out.println("VAR_LIST "+spliitedWord);
@@ -433,14 +436,15 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
    public List<String> extractVariable(String line) {
 		
 		int variableNameCounter = 0;
+        try {
 		String splittedArr[];
-		try {
-		  splittedArr = line.trim().split("\\s+");
-		}
-		catch (NullPointerException e) {
-			return null;
-		}
+		
+		splittedArr = line.trim().split("\\s+");
 		
 		return Arrays.asList(splittedArr);
+        }
+        catch (Exception e) {
+			return null;
+		}
 	}
 }

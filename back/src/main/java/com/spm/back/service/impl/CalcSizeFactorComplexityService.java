@@ -62,7 +62,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		int sizeFctorComplexity = 0;
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
-				
+				line = complexityConstants.extractComments(line);
 				if (complexityConstants.isNonValueExcludeLine(line)) {
 					tokenList.add(null);
 				}
@@ -95,6 +95,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		int sizeFctorComplexity = 0;
 		while ((line = bufferedReader.readLine()) != null) {
 
+			line = complexityConstants.extractComments(line);
 			if (complexityConstants.isNonValueExcludeLine(line)) {
 				sizeFctorComplexity = 0;
 			}
@@ -111,6 +112,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	public int calculateSizefactorPerLine(String line, String type) {
 		
 		int totalSizeComplexityPerLine = 0;
+		line = replacNonValeOperators_WithWhiteSpace(line, type);
 		totalSizeComplexityPerLine += getQuotationCount(line);
 		line = quotationsOmmited(line).trim();
 		totalSizeComplexityPerLine += getSizeComplexity_Operator(line, type);
@@ -231,6 +233,22 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		
 		return costForOperator_BasedOnLine;
 	}
+	
+	public String replacNonValeOperators_WithWhiteSpace(String line, String fileType) {
+		
+		List<String> collectiveLsit = new ArrayList<String>();
+		collectiveLsit.addAll(Arrays.asList(ComplexityConstants.OMMITED_EXTRACT_CONCAT_OPERATOR));
+		Pattern pattern;
+		for (String operator : collectiveLsit) {
+			String regExp = complexityConstants.convertOpToRegex(operator);
+			pattern = Pattern.compile(regExp);
+			Matcher matcher = pattern.matcher(line);
+			while (matcher.find()) {
+				line = matcher.replaceAll(" ");
+			}
+		}
+		return line;
+	}
 
 	public String replaceOperators_WithWhiteSpace(String line, String fileType) {
 
@@ -252,7 +270,6 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 			collectiveLsit.addAll(Arrays.asList(ComplexityConstants.DEREFERENCE));
 		}
 		Pattern pattern;
-        
 		for (String operator : collectiveLsit) {
 			String regExp = complexityConstants.convertOpToRegex(operator);
 			pattern = Pattern.compile(regExp);
@@ -261,7 +278,6 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 				line = matcher.replaceAll(" ");
 			}
 		}
-     
 		return line;
 	}
 	
@@ -418,15 +434,12 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 	public int getVariableNameCount(String line) {
 		
 		int variableNameCounter = 0;
-		try {
+		if(line == null || line.isBlank())
+			return 0;
 		String splittedArr[] = line.trim().split("\\s+");
 		for(String spliitedWord:splittedArr )
 		    System.out.println("VAR_LIST "+spliitedWord);
 		variableNameCounter = splittedArr.length;
-		}
-		catch (NullPointerException e) {
-			return 0;
-		}
 		return variableNameCounter;
 	}
 	

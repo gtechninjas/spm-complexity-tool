@@ -164,8 +164,9 @@ public class RecursionServiceImpl implements RecursionService {
 			lineTotal++;
 		}
 		List<String> twValueList = getTotalWeightList(controlTypeList, nestedList, inheritanceList, lineTotal);
+		System.out.println("############TW VALUE LIST "+twValueList);
 		List<String> cpsValueList = getComplexityProgramConstant(twValueList, sizeList, lineTotal);
-		
+		System.out.println("############CPS VALUE LIST "+cpsValueList);
 		String recursionArr[] = new String[lineTotal];
 		Arrays.fill(recursionArr, "0");
 		for (String extractedMethodName_Line : extractedMethodNameList_Lines) {

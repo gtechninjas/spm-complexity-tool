@@ -72,7 +72,6 @@ public class TotalComplexityServiceImpl implements ITotalComplexityService{
 			complexitySummary.setRecursionFactorComplexityVal(recursionList_Cr.get(i));
 			totalProgramComplexity = getTotalProgramComplexity(recursionList_Cr, complexityProgramStatementList_Cps, getTotalProgramStatmentCounter);
 			complexitySummary.setComplexityOfProgram(totalProgramComplexity);
-			complexitySummary.setComplexityOfProgram(totalProgramComplexity);
 			complexitySummaryList.add(complexitySummary);
 		}
 		for(ComplexitySummary com: complexitySummaryList) {
@@ -105,7 +104,6 @@ public class TotalComplexityServiceImpl implements ITotalComplexityService{
 			boolean isIntComplexityProgramStatment = false;
 
 			if(recursionList.get(i) == null || recursionList.get(i) == "" ||TryParse(recursionList.get(i))) {
-				System.out.println("TRUE INT TOTAL PROGRAM");
 				if(recursionList.get(i) == null|| recursionList.get(i) == "") {					
 					recursionVal = 0;
 				}
@@ -116,7 +114,6 @@ public class TotalComplexityServiceImpl implements ITotalComplexityService{
 			}
 			
 			if(complexityProgramStatmentList.get(i) == null || complexityProgramStatmentList.get(i) == "" ||TryParse(complexityProgramStatmentList.get(i))) {
-				System.out.println("TRUE INT TOTAL PROGRAM");
 				if(complexityProgramStatmentList.get(i) == null|| complexityProgramStatmentList.get(i) == "") {					
 					complexityProgramStatmentVal = 0;
 				}
@@ -127,6 +124,7 @@ public class TotalComplexityServiceImpl implements ITotalComplexityService{
 			}
 			if(isIntRecusrion == true && recursionVal == 0) {
 				if(isIntComplexityProgramStatment) {
+					
 					totalProgramComplexityVal_INT += complexityProgramStatmentVal;
 				}
 				else {
@@ -142,9 +140,9 @@ public class TotalComplexityServiceImpl implements ITotalComplexityService{
 				}
 			}
 			
-			totalProgramComplexityVal_STRING = totalProgramComplexityVal_STRING + totalProgramComplexityVal_INT;
 			
 		}
+		totalProgramComplexityVal_STRING = totalProgramComplexityVal_STRING + totalProgramComplexityVal_INT;
 		
 		return totalProgramComplexityVal_STRING;
 	}

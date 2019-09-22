@@ -39,6 +39,7 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		String controlTypeFctorComplexity = null;
 		while ((line = bufferedReader.readLine()) != null) {
 
+			line = complexityConstants.extractComments(line);
 			if (complexityConstants.isNonValueExcludeLine(line)) {
 				controlTypeFctorComplexity = null;
 			}
@@ -57,33 +58,144 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 	public List<String> getCalcControlComplexity_Nested(String filePath) throws IOException{
 		
 		File file = new File(filePath);
-		List<String> listedNestedComplexities = new ArrayList<String>();
+		List<Integer> listedNestedComplexities = new ArrayList<Integer>();
+		List<String> listedNestedComplexities_STRING = new ArrayList<String>();
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		String fileExtension = filePath.substring(filePath.indexOf('.') + 1);
         String fileType = getFileType(filePath);
 		String line = null;
-		String nestedFctorComplexity = null;
+		int nestedFctorComplexity = 0;
+		String lastControlTypeOp, currentControlTypeOp;
+		int nestedComplexity = 0;
+		int bracesCounter = 0;
+		lastControlTypeOp = null;
+		currentControlTypeOp = null;
+		int nestingLevel = 0;
+		
+		int cnc = 0; 
+		boolean mainFlag = false;
+		boolean elseFlag = false;
+		boolean singleCommentFlag = false;
+		boolean multiCommentFlagBegin = false;
+		boolean multiCommentFlagEnd = false;
+		
+	
 		while ((line = bufferedReader.readLine()) != null) {
-
-			if (complexityConstants.isNonValueExcludeLine(line)) {
-				nestedFctorComplexity = null;
-			}
-			else {
-				nestedFctorComplexity = getControlComplexity_NestedPerLine(line);
+			
+			Pattern patternStructure = Pattern.compile(complexityConstants.MATCH_NESTING_CONTROL_STRUCTURE);
+			Matcher matcherStructure = patternStructure.matcher(line);
+			
+			Pattern patterBreakPoint = Pattern.compile(complexityConstants.MATCH_NESTING_CONTROL_BREAK);
+			Matcher matcherBreakPoint = patterBreakPoint.matcher(line);
+			
+			Pattern patterElse = Pattern.compile(complexityConstants.MATCH_NESTING_CONTROL_ELSE);
+			Matcher matcherElse = patterElse.matcher(line);
+			
+			Pattern patternSingleLineComment = Pattern.compile(complexityConstants.MATCH_NESTING_SINGLE_LINE_COMMENT);
+			Matcher matcherSingleLineComment = patternSingleLineComment.matcher(line);
+						
+			Pattern patternMultiLineCommentBegin = Pattern.compile(complexityConstants.MATCH_NESTING_MULTI_LINE_COMMENT_BEGIN);
+			Matcher matcherMultiLineCommentBegin = patternMultiLineCommentBegin.matcher(line);
+			
+			Pattern patternMultiLineCommentEnd = Pattern.compile(complexityConstants.MATCH_NESTING_MULTI_LINE_COMMENT_END);
+			Matcher matcherMultiLineCommentEnd = patternMultiLineCommentEnd.matcher(line);
+			
+			while(matcherStructure.find()) {
+				++cnc;
+				mainFlag = true;
 			}
 			
+			while(matcherBreakPoint.find()) {
+				--cnc;
+				mainFlag = true;
+			}
+		
 			
-			listedNestedComplexities.add(nestedFctorComplexity);
+			while(matcherElse.find()) {
+				elseFlag = true;
+				mainFlag = true;
+			}
+			
+			while( matcherSingleLineComment.find()) {
+			
+				if( mainFlag ) {
+					singleCommentFlag = false;
+					mainFlag = false;
+				}else {
+					singleCommentFlag = true;
+					mainFlag = false;
+				}
+			}
+			
+			while( matcherMultiLineCommentBegin.find() ) {
+				multiCommentFlagBegin = true;
+			}
+			
+			while( matcherMultiLineCommentEnd.find() ) {
+				multiCommentFlagEnd = true;
+			}
+			
+			if( cnc < 0 ) {
+				cnc = 0;
+			}
+			
+		
+			
+			System.out.println("nester line : " + line);
+			if(line.isEmpty()) {
+				System.out.println("null statement");
+				listedNestedComplexities.add(0);
+			}else {
+				if(elseFlag) {
+					listedNestedComplexities.add(0);
+					elseFlag = false;
+				}else {
+					
+					if(singleCommentFlag ) {
+						listedNestedComplexities.add(0);
+						singleCommentFlag = false;
+					}else
+						if( multiCommentFlagBegin ) {
+							
+							if( multiCommentFlagEnd ) {
+								listedNestedComplexities.add(0);
+								multiCommentFlagBegin = false;
+								multiCommentFlagEnd = false;
+							}
+							
+						
+						}else {
+							listedNestedComplexities.add(cnc);
+						}
+				
+				}
+				
+			}
 
 		}
-		return listedNestedComplexities;
+		for(int nestedComplexityVal :listedNestedComplexities ) {
+			listedNestedComplexities_STRING.add(Integer.toString(nestedComplexityVal));
+		}
+		return listedNestedComplexities_STRING;
 		
 	}
 	
-	public String getControlComplexity_NestedPerLine(String line) {
-	  return "";	
+      public int getLineCounter(String filePath) throws IOException{
+		
+		File file = new File(filePath);
+		List<String> listedNestedComplexities = new ArrayList<String>();
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String line = null;
+		int lineCounter = 0;
+		while ((line = bufferedReader.readLine()) != null) {
+			lineCounter++;
+		}
+		return lineCounter;
+		
 	}
+	
 
 	public String getControlTypeComplexityKeyword_Nested(String line) {
 
@@ -95,8 +207,7 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 		Pattern pattern;
 
 		for (String singleValuedOp : valuedCollectiveList) {
-			String regExp = complexityConstants.convertOpToRegex(singleValuedOp);
-			pattern = Pattern.compile(regExp);
+			pattern = Pattern.compile(singleValuedOp);
 			Matcher matcher = pattern.matcher(line);
 			while (matcher.find()) {
 				System.out.println("1OP : " + matcher.group());
@@ -160,7 +271,55 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 
 		return costForOperator_BasedOnLine;
 	}
+	
+	public int BitWiseOpVal(String line) {
+		
+		int bitwiseOpVal = 0;
+		int totalVal = 0;
+		
+		List<String> singleValuedCollectiveList = new ArrayList<String>();
+		singleValuedCollectiveList.addAll(Arrays.asList(ComplexityConstants.CONTROL_TYPE_SINGLE_VALUED));
+		
+		List<String> doubleValuedCollectiveList = new ArrayList<String>();
+		doubleValuedCollectiveList.addAll(Arrays.asList(ComplexityConstants.CONTROL_TYPE_DOUBLE_VALUED));
+		
+		List<String> bitwiseCollectiveList = new ArrayList<String>();
+		bitwiseCollectiveList.addAll(Arrays.asList(ComplexityConstants.CONTROL_TYPE_BITWISE));
+		
+		String whitespace = "\\s+";
+		Pattern pattern;
+		for (String singleValuedKey : singleValuedCollectiveList) {
+			String regExp = whitespace + singleValuedKey+whitespace;
+			pattern = Pattern.compile(regExp);
+			Matcher matcher = pattern.matcher(line);
+			while (matcher.find()) {
+				bitwiseOpVal = 1;
+				System.out.println("****************FOUNDED "+matcher.group());
+			}
+		}
+		for (String doubleValuedKey : doubleValuedCollectiveList) {
+			String regExp =whitespace+ doubleValuedKey+whitespace;
+			pattern = Pattern.compile(regExp);
+			Matcher matcher = pattern.matcher(line);
+			while (matcher.find()) {
 
+				bitwiseOpVal = 2;
+				System.out.println("******************FOUNDED "+matcher.group());
+
+			}
+		}
+		
+		for (String singleValuedKey : bitwiseCollectiveList) {
+			String regExp = complexityConstants.convertOpToRegex(singleValuedKey);;
+			pattern = Pattern.compile(regExp);
+			Matcher matcher = pattern.matcher(line);
+			System.out.println("%%%%%%%%%%%%%%%BIT WISE VAL     "+bitwiseOpVal);
+			totalVal += matcher.groupCount() * bitwiseOpVal;
+		}
+		return totalVal;
+		
+		
+	}
 	public HashMap<Integer, Integer> getControlTypeComplexity_Keyword(String line) {
 
 		int costForKeyword_BasedOnLine = 0;
@@ -221,12 +380,13 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 	public String getControlTypeComplexityCostPerLine_BasedOnType(String line) {
 
 		String calculatedControlTypeComplexity;
+		System.out.println("##########LINE + "+line+"   "+BitWiseOpVal(line));
         if(calculateSwitchControlTypeComplexity_BasedOnType(line) != null) {
-        	calculatedControlTypeComplexity = getControlTypeComplexity(line) + " "
+        	calculatedControlTypeComplexity = getControlTypeComplexity(line)+BitWiseOpVal(line) + ""
     				+ calculateSwitchControlTypeComplexity_BasedOnType(line).size() + "n";
         }
         else {
-        	calculatedControlTypeComplexity = getControlTypeComplexity(line) + " ";
+        	calculatedControlTypeComplexity = getControlTypeComplexity(line) + BitWiseOpVal(line)+ "";
         }
 		return calculatedControlTypeComplexity;
 	}
@@ -258,106 +418,5 @@ public class CalcControlStructureFactorComplexityService implements ICalcControl
 
 	}
 	
-	public HashMap<Integer, String> readAllLines(File f) throws IOException {
-
-		/**
-		 * Defining Variables
-		 */
-//		String line = null;
-//		int lineCounter = 0;
-//		String controlTypeOperator = null;
-//		int openBracesValue = 0;
-//		int closedBracesValue = 0;
-//		int controlComplexity_Nested = 0;
-//		String filePath = null;
-//		String fileExtension = null;
-//		HashMap<Integer, Integer> controlTypecodecomplexities_Nested = new HashMap<Integer, Integer>();
-//		int controlTypecodecomplexities_Nested_PerLine = 0;
-//		List<String> controlType_KeywordPointer = new ArrayList<String>();
-//		List<Integer> openBraces_LineCounter = new ArrayList<Integer>();
-//		List<Integer> closedBraces_LineCounter = new ArrayList<Integer>();
-//		List<Integer> nonValue_LineCounter = new ArrayList<Integer>();
-//
-//		FileReader fileReader = new FileReader(f);
-//		BufferedReader bufferedReader = new BufferedReader(fileReader);
-//
-//		filePath = f.getPath();
-//		fileExtension = filePath.substring(filePath.indexOf('.') + 1);
-//
-//		String fileType = getFileType(filePath);
-//		
-//		if (fileType == null) {
-//			System.out.println("Cannot Calculate Complexity of this file");
-//			return null;
-//		}
-//		
-//
-//		while ((line = bufferedReader.readLine()) != null) {
-//			
-//			controlTypeOperator = getControlTypeComplexityKeyword_Nested(line);
-//			openBracesValue = getOpenbracesCount(line);
-//			closedBracesValue = getClosedBracesCount(line);
-//			lineCounter++;
-//			complexityConstants = new ComplexityConstants();
-//			
-//			if(complexityConstants.isNonValueExcludeLine_ControlType(line)) {
-//				continue;
-//			}
-//			
-//			if(controlTypeOperator != null) {
-//				controlType_KeywordPointer.add(lineCounter,controlTypeOperator);
-//			}
-//			else {
-//				controlType_KeywordPointer.add(lineCounter,null);
-//			}
-//			
-//			if(openBracesValue > 0) {
-//				openBraces_LineCounter.add(lineCounter,openBracesValue);
-//			}
-//			else{
-//				openBraces_LineCounter.add(lineCounter,0);
-//
-//			}				
-//			
-//			if(closedBracesValue > 0) {
-//				closedBraces_LineCounter.add(lineCounter,closedBracesValue);
-//			}
-//			else{
-//				closedBraces_LineCounter.add(lineCounter,0);
-//
-//			}
-//			
-//			if(complexityConstants.isNonValueExcludeLine(line)) {
-//				nonValue_LineCounter.add(0);
-//			}
-//			else {
-//				nonValue_LineCounter.add(1);
-//			}
-//			
-//		}
-//		
-//		while ((line = bufferedReader.readLine()) != null) {
-//			
-//			lineCounter++;
-//			
-//			for(int index = 1;index <= lineCounter;index++) {
-//				
-//				controlTypeOperator = controlType_KeywordPointer.get(index);
-//				openBracesValue = openBraces_LineCounter.get(index);
-//				closedBracesValue = closedBraces_LineCounter.get(index);
-//				
-//				if(controlTypeOperator != null) {
-//					if(controlTypeOperator.equals("else")) {
-//						controlTypecodecomplexities_Nested_PerLine++;
-//					}
-//				}
-//				if(nonValue_LineCounter.get(index) == 1) {
-//					
-//				}
-//				
-//			}
-//		}
-		return null;
-	}
 
 }

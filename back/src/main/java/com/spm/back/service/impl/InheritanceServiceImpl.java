@@ -44,18 +44,19 @@ public class InheritanceServiceImpl implements IInheritanceService{
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		String line = null;
-		int sizeFctorComplexity = 0;
+		int inheritanceeFctorComplexity = 0;
 		while ((line = bufferedReader.readLine()) != null) {
 
+			line = complexityConstants.extractComments(line);
 			if (complexityConstants.isNonValueExcludeLine(line)) {
-				sizeFctorComplexity = 0;
+				inheritanceeFctorComplexity = 0;
 			}
-			else {
-				sizeFctorComplexity = showResourceData(filePath);
+			else {				
+				inheritanceeFctorComplexity = showResourceData(filePath);
 			}
 			
 			
-			listedInheritanceComplexities.add(sizeFctorComplexity);
+			listedInheritanceComplexities.add(inheritanceeFctorComplexity);
 
 		}
 		return listedInheritanceComplexities;
@@ -98,7 +99,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 					}
 				}
 
-				complexity = ancClasses;
+				complexity = ancClasses+1;
 				complexity++;
 
 			case "cp":
@@ -118,7 +119,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 
 					}
 				}
-				complexity = ancClasses;
+				complexity = ancClasses+1;
 				complexity++;
 			
 			}
@@ -127,6 +128,7 @@ public class InheritanceServiceImpl implements IInheritanceService{
 			e.printStackTrace();
 			complexity = 0;
 		}
+
 		return complexity;
 
 	}

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,10 +24,13 @@ public class ComplexitySizeFactorCalcController {
 	@Autowired
 	private CalcSizeFactorComplexityService calcSizeFactorComplexityService; 
 	
+	@Value("${codefilepath}")
+	private String filepath;
+	
 	@GetMapping("/size")
 	public ResponseEntity<?> getComplexityByFilePath() {
 		ResponseEntity<?> responseEntity = null;
-		String filepath = "C:\\Users\\diaalk\\Desktop\\Test.java";
+		
 		if(filepath == null) {
 			System.out.println("No file");
 		}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,11 +30,13 @@ public class TotalComplexityController {
 	
 	@Autowired
 	private TotalComplexityServiceImpl totalComplexityServiceImpl;
+
+	@Value("${codefilepath}")
+	private String filepath;
 	
 	@GetMapping("/total")
-	public ResponseEntity<?> getTotalComplexityByFilePath() {
+	public ResponseEntity<?> getTotalComplexityByFilePath(String filelocation) {
 		ResponseEntity<?> responseEntity = null;
-		String filepath = "C:\\Users\\diaalk\\Desktop\\Test.java";
 		
 		 
 		if(filepath == null) {

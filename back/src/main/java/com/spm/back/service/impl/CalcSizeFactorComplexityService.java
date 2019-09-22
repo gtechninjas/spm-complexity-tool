@@ -136,7 +136,7 @@ public class CalcSizeFactorComplexityService implements ICalcSizeFactorComplexit
 		System.out.println("********EXTRACTED KEYWORD LIST : " + extractKeywords(line));
 		line = replaceKeywords_WithWhiteSpace(line).trim();
 		System.out.println("********KEYWORDS OMMITED TOKEN LINE : " + line);
-		extractedTokenList.addAll(extractVariable(line));
+		//extractedTokenList.addAll(extractVariable(line));
 		System.out.println("********EXTRACTED VAR LIST : " + extractVariable(line));
 
 		return extractedTokenList;

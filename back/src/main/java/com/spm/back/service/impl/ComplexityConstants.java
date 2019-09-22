@@ -73,7 +73,7 @@ public class ComplexityConstants {
 	 * 
 	 */
 	public String extractComments(String line) {
-		if(line == null ||line.isBlank()) {
+		if(line == null ||line.isEmpty()) {
 			return null;			
 		}
 		else {
@@ -81,7 +81,7 @@ public class ComplexityConstants {
 			Pattern pattern = Pattern.compile(regExp);
 			Matcher matcher = pattern.matcher(line);
 			line = matcher.replaceAll(" ");
-			if(line.trim().isBlank())
+			if(line.trim().isEmpty())
 				return null;
 			
 			return line;
